@@ -1,0 +1,17 @@
+# Proof of Concept
+
+## Problema
+
+
+## público-alvo
+Alunos interessados em cursar pós-graduação em Ciência da Computação no Brasil. 
+
+->arquitetura(grafo)
+
+->demo
+
+->métricas
+
+->limitações
+
+->próximos passos
