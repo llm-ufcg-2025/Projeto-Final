@@ -8,6 +8,7 @@ class AgentState(TypedDict):
     explicacao:
     """
     enunciado : str
-    gabarito : str
     alternativas : list[str]
+    gabarito : str
+    resposta_user: str
     explicacao : str

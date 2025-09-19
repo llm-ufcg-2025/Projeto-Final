@@ -1,4 +1,4 @@
-from AgentState import AgentState
+from src.AgentState import AgentState
 
 def question_explanation_node(state: AgentState) -> AgentState:
     """Nó para uso de LLM e busca na WEB para gerar a explicação da questão"""

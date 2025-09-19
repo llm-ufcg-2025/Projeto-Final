@@ -1,4 +1,4 @@
-from AgentState import AgentState
+from src.AgentState import AgentState
 
 def supervisor_node(state: AgentState) -> AgentState:
     """Nó para gerenciar interações com usuário"""
@@ -14,5 +14,5 @@ def decide_next_node(state: AgentState) -> str:
     elif not state['explicacao']:
         return "generate_explanation"
     
-    elif not state['continue']:
+    else:
         return "stop"

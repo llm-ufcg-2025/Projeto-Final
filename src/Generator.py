@@ -1,4 +1,4 @@
-from AgentState import AgentState
+from src.AgentState import AgentState
 
 def question_generation_node(state: AgentState) -> AgentState:
     """Nó responsável pela geração de questões ao estilo POSComp usando RAG e LLM"""

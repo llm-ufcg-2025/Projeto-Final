@@ -4,7 +4,8 @@
 
 
 ## público-alvo
-Alunos interessados em cursar pós-graduação em Ciência da Computação no Brasil. 
+Estudantes interessados em ingressar na pós-graduação em Ciência 
+da Computação por meio da prova da POSComp
 
 ->arquitetura(grafo)
 
