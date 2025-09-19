@@ -7,8 +7,8 @@ st.caption("Pronto para gabaritar a prova do mestrado?")
 
 
 pg = st.navigation([
-    st.Page("app/slides.py", title="Slides", icon="📚"),
-    st.Page("app/app.py", title="App", icon="📝"),
+    st.Page("ui/slides.py", title="Slides", icon="📚"),
+    st.Page("ui/checkai.py", title="CheckAI", icon="📝"),
 ])
 
 pg.run()
