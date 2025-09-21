@@ -15,7 +15,7 @@ from langchain_google_genai import GoogleGenerativeAIEmbeddings
 
 from src import App
 
-
+print('----------------')
 
 
 def bootstrap(values, n_bootstrap=10000):
@@ -39,6 +39,9 @@ gemini_llm = ChatGoogleGenerativeAI(
     google_api_key=os.getenv("GOOGLE_API_KEY"),
     temperature=0
 )
+
+print('----------------')
+
 
 
 questions = [
@@ -95,6 +98,7 @@ resources_usages = {
 
 
 rows = []
+print('----------------')
 
 for question, gt in zip(questions, ground_truths):
     process = psutil.Process()
@@ -115,12 +119,18 @@ for question, gt in zip(questions, ground_truths):
 
     rows.append({
         'user_input': question,
-        'retrieved_contexts': res_state["context"],
+        'retrieved_contexts': [doc.page_content for doc in res_state["context"]],
         'response': res_state['answer'],
         'reference': gt
     })
 
+print('----------------')
+
+
 evaluation_dataset = Dataset.from_list(rows)
+
+print('----------------')
+
 
 scores = evaluate(
     evaluation_dataset,
@@ -133,6 +143,7 @@ scores = evaluate(
     embeddings=gemini_embeddings
 )
 
+print('----------------')
 
 
 df1 = scores.to_pandas()
@@ -145,6 +156,8 @@ df2 = df2.reset_index(drop=True)
 
 df3 = pd.concat([df1, df2], axis=1)
 df3.to_csv('eval/metrics.csv')
+
+print('----------------')
 
 
 with open('eval/relatorio.md', mode='w') as f:
