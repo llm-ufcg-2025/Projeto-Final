@@ -4,7 +4,6 @@ from src.StateGraph import App
 
 st.badge("Respostas geradas por IA", icon=":material/info:", color="yellow")
 
-
 # INIT ESTADO DO STREAMLIT
 estado = {
     'app': App(),
@@ -14,7 +13,6 @@ estado = {
 for key, value in estado.items():    
     if key not in st.session_state:
         st.session_state[key] = value
-
 
 def load_historico():
     for msg in st.session_state.mensagens:
@@ -32,7 +30,7 @@ if prompt := st.chat_input("Digite sua mensagem..."):
     with st.chat_message("user", ):
         st.text(prompt)
 
-    resposta = f"{prompt}"
+    resposta = st.session_state.app.run(prompt)['answer']
 
     # adiciona resposta do bot
     st.session_state.mensagens.append({"role": "assistant", "content": resposta})
@@ -43,4 +41,5 @@ if prompt := st.chat_input("Digite sua mensagem..."):
         for letra in resposta:
             texto += letra
             placeholder.markdown(texto)  # ou st.write
-            time.sleep(0.04)  # ajuste a velocidade (em segundos)
+            time.sleep(0.02)  # ajuste a velocidade (em segundos)
+
