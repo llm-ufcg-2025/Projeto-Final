@@ -1,4 +1,5 @@
 import os, getpass
+import unicodedata
 
 from langchain import hub
 from langchain_huggingface import HuggingFaceEmbeddings
@@ -31,23 +32,32 @@ llm = ChatGoogleGenerativeAI(model="gemini-2.5-flash", temperature=0)
 
 
 
+def normalize(text: str) -> str:
+    return ''.join(c for c in unicodedata.normalize('NFD', text)
+                   if unicodedata.category(c) != 'Mn').lower()
+
 
 def retrieve(state: State) -> State:
-    # Primeiro, verifica se a pergunta é sobre TDAH ou temas relacionados
-    topic_keywords = ["TDAH", "ADHD", "déficit de atenção", "hiperatividade",
-                     "transtorno atenção", "neurodesenvolvimento", "psiquiatria",
-                     "mental health", "saúde mental", "neurodivergência", "autismo", "tdah", "ritalina", "venvanse"]
+    topic_keywords = [
+        "TDAH", "ADHD", "déficit de atenção", "hiperatividade",
+        "transtorno atenção", "neurodesenvolvimento", "psiquiatria",
+        "mental health", "saúde mental", "neurodivergência",
+        "tdah", "ritalina", "venvanse", "diagnóstico",
+    ]
 
-    question_lower = state["question"].lower()
-    is_about_tdah = any(keyword.lower() in question_lower for keyword in topic_keywords)
+    question_norm = normalize(state["question"])
+    is_about_tdah = any(normalize(keyword) in question_norm for keyword in topic_keywords)
 
     if not is_about_tdah:
         return {"context": [], "used_web": False, "is_off_topic": True}
 
-    # Se for sobre TDAH, busca no vectorstore
-    retrieved_docs = vectorstore.similarity_search(state["question"])
+    retrieved_docs = vectorstore.similarity_search_with_score(state["question"], k=3)
 
-    if not retrieved_docs:
+    relevant_docs = [doc for doc, score in retrieved_docs if score > 0.7]
+
+    if relevant_docs:
+        return {"context": relevant_docs, "used_web": False, "is_off_topic": False}
+    else:
         web_results = web_search.run(state["question"])
 
         web_docs = []
@@ -64,30 +74,12 @@ def retrieve(state: State) -> State:
                 web_docs.append(Document(page_content=content, metadata=metadata))
 
         return {"context": web_docs, "used_web": True, "is_off_topic": False}
-    else:
-        return {"context": retrieved_docs, "used_web": False, "is_off_topic": False}
 
 
-
-
-
-
-def generate(state: State) -> State:
+def generate(state: State):
     if state.get("is_off_topic", False):
-        # Para perguntas fora do escopo, resposta simples sem fontes
-        messages = [
-            SystemMessage(
-                content="""Você é um assistente especializado em TDAH. Para 
-                perguntas fora deste escopo, responda de forma geral sem citar
-                fontes específicas."""),
-            HumanMessage(
-                content=f"""Pergunta: {state['question']}\n\nPor favor, responda
-                de forma geral, já que esta pergunta não está relacionada ao TDAH.""")
-        ]
-        response = llm.invoke(messages)
-        return {"answer": response.content}
+        return {"answer": "Desculpe, só consigo responder perguntas relacionadas a TDAH e saúde mental."}
 
-    # Prepara o contexto com fontes (apenas para perguntas sobre TDAH)
     context_with_sources = []
     for i, doc in enumerate(state["context"]):
         source_info = ""
@@ -106,22 +98,18 @@ def generate(state: State) -> State:
     return {"answer": response.content}
 
 
-
-def self_check(state: State) -> State:
-    # Se for off-topic, não faz verificação de fontes
+def self_check(state: State):
     if state.get("is_off_topic", False):
         return state
 
     answer = state["answer"]
 
-    # Verifica se já contém informações de fonte
     has_sources = any(keyword in answer for keyword in
                      ["Fonte:", "http://", "https://", "p.", "página", "fonte:", "source:"])
 
     if has_sources:
         return state
     else:
-        # Busca específica para fontes confiáveis sobre TDAH
         search_query = f"{state['question']} site:.edu OR site:.gov OR site:.org OR site:.research OR site:.scielo.br"
         web_results = web_search.run(search_query)
 
@@ -139,13 +127,11 @@ def self_check(state: State) -> State:
 
                 web_docs.append(Document(page_content=content, metadata=metadata))
 
-        # Prepara contexto com ênfase em fontes
         verification_context = "\n\n".join(
             f"{doc.page_content} [Fonte de verificação: {doc.metadata.get('validation_url', 'Busca web')}]"
             for doc in web_docs
         )
 
-        # Prompt específico para incluir fontes
         source_prompt = """
         Você forneceu uma resposta sobre TDAH, mas precisa incluir fontes confiáveis.
         Use as informações abaixo para adicionar referências à sua resposta.
