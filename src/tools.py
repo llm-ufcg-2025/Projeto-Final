@@ -42,7 +42,7 @@ def retrieve(state: State) -> State:
         "TDAH", "ADHD", "déficit de atenção", "hiperatividade",
         "transtorno atenção", "neurodesenvolvimento", "psiquiatria",
         "mental health", "saúde mental", "neurodivergência",
-        "tdah", "ritalina", "venvanse", "diagnóstico",
+        "tdah", "ritalina", "venvanse", "diagnóstico"
     ]
 
     question_norm = normalize(state["question"])
