@@ -1,25 +1,24 @@
+import os, getpass
+
+from langchain import hub
+from langchain_huggingface import HuggingFaceEmbeddings
+from langchain_google_genai import ChatGoogleGenerativeAI
+from langchain_core.messages import SystemMessage, HumanMessage
+from langchain_core.documents import Document
 from langchain_community.tools import DuckDuckGoSearchResults
 from langchain_community.vectorstores import FAISS
-from langchain_huggingface import HuggingFaceEmbeddings
-
-
-
-from langchain_core.messages import SystemMessage, HumanMessage
-from langchain_google_genai import ChatGoogleGenerativeAI
-from langchain import hub
-
-from langchain_core.documents import Document
-
 
 from src.State import State
 
-import os, getpass
 
-def _set_env(var: str):
-    if not os.environ.get(var):
-        os.environ[var] = getpass.getpass(f"{var}: ")
+
+def _set_env(var) -> None:
+        if not os.environ.get(var):
+            os.environ[var] = getpass.getpass(var)
 
 _set_env("GOOGLE_API_KEY")
+
+
 
 
 embeddings = HuggingFaceEmbeddings(model_name="sentence-transformers/all-MiniLM-L6-v2")

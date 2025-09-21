@@ -1,9 +1,9 @@
+import os, getpass
+
 from langgraph.graph import StateGraph, START, END
 
 from src.State import State
 from src.tools import retrieve, generate, self_check
-
-
 
 
 class App():
@@ -35,3 +35,6 @@ class App():
 
     def run(self, question):
         return self.app.invoke({'question': question})
+    
+
+    
