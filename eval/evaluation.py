@@ -1,0 +1,632 @@
+"""Este módulo visa avaliar via RAGAS a performance do sistema desenvolvido."""
+
+import json
+import os
+import time
+import psutil
+import numpy as np
+import pandas as pd
+
+
+from ragas import evaluate
+from datasets import Dataset
+from ragas.metrics import faithfulness, answer_relevancy, answer_correctness, context_precision, context_recall
+# from langchain_google_genai import ChatGoogleGenerativeAI
+# from langchain_google_genai import GoogleGenerativeAIEmbeddings
+
+# from src import App
+
+# print('----------------')
+
+
+def bootstrap(values, n_bootstrap=10000):
+    values = np.array(values)
+    mean = values.mean()
+    std = values.std()
+    boot_means = [np.random.choice(values, size=len(values), replace=True).mean() for _ in range(n_bootstrap)]
+    ic95 = np.percentile(boot_means, [2.5, 97.5])
+    return mean, std, ic95
+
+
+# APP = App()
+
+# gemini_embeddings = GoogleGenerativeAIEmbeddings(
+#     model="models/embedding-001",
+#     google_api_key=os.getenv("GOOGLE_API_KEY")
+# )
+
+# gemini_llm = ChatGoogleGenerativeAI(
+#     model="gemini-2.5-flash",
+#     google_api_key=os.getenv("GOOGLE_API_KEY"),
+#     temperature=0
+# )
+
+# print('----------------')
+
+
+
+# questions = [
+#     "Como podem ser divididas as técnicas de tratamento de TDAH?",
+#     "Quais as técnicas cognitivas mais utilizadas para tratar TDAH?",
+#     "Quais as técnicas comportamentais mais utilizadas para tratar TDAH?",
+#     "O incentivo as famílias a fortalecer as parcerias ajuda o processo de gerenciamento do TDAH?",
+#     "O que é aconselhável ao profissional de saúde após diagnosticar TDAH?",
+#     "O que é o TDAH segundo o DSM-5?",
+#     "Quando os sintomas do TDAH geralmente começam?",
+#     "Qual a prevalência mundial de TDAH em crianças e adolescentes?",
+#     "Quais funções cognitivas podem ser afetadas pelo TDAH?",
+#     "Qual a prevalência de TDAH em crianças e adolescentes no Brasil?",
+#     "Quem deve realizar o diagnóstico de TDAH?",
+#     "Que tipo de avaliação deve ser feita em casos de suspeita de TDAH?",
+#     "O diagnóstico de TDAH pode ser feito tanto em crianças quanto em adultos?",
+#     "Quantos sintomas indicativos podem confirmar o diagnóstico de TDAH?",
+#     "Quais os principais grupos de sintomas do TDAH?",
+#     "Qual é o código do TDAH na CID-10 da OMS?",
+#     "Qual abordagem é recomendada para o tratamento do TDAH?",
+#     "Quais intervenções não medicamentosas são citadas para o TDAH?",
+#     "O que as diretrizes do NICE recomendam no tratamento do TDAH?",
+#     "Que estratégias muitos adultos com TDAH desenvolvem?"
+# ]
+
+# ground_truths = [
+#     'Técnicas cognitivas e comportamentais', # Pag 18
+#     'reestruturação cognitiva, solução de problemas, diálogo interno, treinamento de autocontrole, autorreforço e treino de autoinstrução', # Pag 18
+#     'automonitoramento e autoavaliação, sistema de recompensas, sistema de fichas, custo de resposta, punições, tarefas de casa, modelagem, dramatizações, além de treinamento de comunicação social, planejamento e cronogramas', # Pag 18
+#     'Sim, ajudam', # Pag 21
+#     "Proporcionar uma discussão estruturada com o paciente sobre como o TDAH pode afetar sua vida", # Pag 22
+#     "É um transtorno do neurodesenvolvimento marcado por desatenção, hiperatividade e impulsividade.", # Pag 7
+#     "Na infância.", # Pag 7
+#     "Entre 3% e 8%.", # Pag 7
+#     "Atenção, memória de trabalho, planejamento e resolução de problemas", # Pag 7
+#     "7,6%.", # Pag 7
+#     'Médico psiquiatra, pediatra ou outro profissional de saúde qualificado.', # Pag 10
+#     'Uma avaliação clínica e psicossocial completa.', # Pag 10
+#     'Sim.', # Pag 10
+#     'Dezoito sintomas.', # Pag 10
+#     'Desatenção, hiperatividade e impulsividade.', # Pag 10
+#     'F90.', # Pag 10
+#     "Uma intervenção multimodal.", # Pag 17
+#     "Intervenções cognitivas e comportamentais.", # Pag 17
+#     "Dieta equilibrada, boa nutrição e exercício físico regular.", # Pag 17
+#     "Estratégias compensatórias de enfrentamento." # Pag 17
+# ]
+
+
+# 'AIzaSyDAO5Tb_GmNBWIYMzgm7yix56b8LgxpR8c'
+
+# rows = []
+# print('----------------')
+
+# iter = 0
+# for question, gt in zip(questions, ground_truths):
+#     print(iter)
+#     iter+=1
+
+#     process = psutil.Process()
+
+#     mem_before = process.memory_info().rss / (1024 ** 2)  # MB
+#     cpu_before = psutil.cpu_percent(interval=None)
+#     time_before = time.time()
+
+#     res_state = APP.run(question) # Chamada ao modelo
+    
+#     time_after = time.time()
+#     mem_after = process.memory_info().rss / (1024 ** 2)  # MB
+#     cpu_after = psutil.cpu_percent(interval=None)
+
+#     rows.append({
+#         'user_input': question,
+#         'retrieved_contexts': [doc.page_content for doc in res_state["context"]],
+#         'response': res_state['answer'],
+#         'reference': gt,
+#         'latencia': time_after - time_before,
+#         'ram': np.abs(mem_after - mem_before),
+#         'cpu': np.abs(cpu_after - cpu_before)
+#     })
+
+
+# print('----------------')
+
+# with open("output.json", "w", encoding="utf-8") as f:
+#     json.dump(rows, f, ensure_ascii=False, indent=4)
+
+# with open("output.json", "r", encoding="utf-8") as f:
+#     rows = json.load(f)
+
+# evaluation_dataset = Dataset.from_list(rows)
+
+print('----------------')
+
+
+
+
+# from ragas.llms import LangchainLLMWrapper
+# from langchain_openai import ChatOpenAI
+
+
+# llm = ChatOpenAI(model="gpt-4o")
+# # openai_client = openai.OpenAI()
+# # embeddings = OpenAIEmbeddings(client=openai_client)
+
+# 
+# evaluator_llm = LangchainLLMWrapper(llm)
+
+# i = 0
+# for metrica in [faithfulness, answer_correctness, answer_relevancy, context_recall, context_precision]:
+#     i += 1
+#     scores = evaluate(
+#         evaluation_dataset,
+#         metrics=[
+#             metrica
+#         ],
+#         # llm=gemini_llm,
+#         # embeddings=gemini_embeddings
+#     )
+
+#     print('----------------')
+
+
+#     df1 = scores.to_pandas()
+#     df1 = df1.reset_index(drop=True)
+#     df1.to_csv(f'eval/{i}.csv')
+
+
+# df3 = pd.concat([df1, df2], axis=1)
+# df3.to_csv('eval/metrics.csv')
+
+# print('----------------')
+
+rows = [
+    {
+        "user_input": "Como podem ser divididas as técnicas de tratamento de TDAH?",
+        "retrieved_contexts": [
+            "180 \n \nAceitabilidade \nA intervenção é aceitável para os principais interessados? \nJulgamento EVIDÊNCIAS DE PESQUISA CONSIDERAÇÕES ADICIONAIS \n○ No \n○ Provavelmente não \n● Provavelmente sim \n○ Sim \n○ Varia \n○ Incerto \n \nO tratamento psicológico deve ofertar suporte estruturado, focado no TDAH, com acompanhamento \nregular e envolver um programa de TCC completo.  \nOs riscos e os benefícios (por exemplo, como o tratamento pode ter um efeito positivo nos sintomas de \nTDAH) da TCC devem ser ponderados. Assim como as possíveis barreiras à adesão e à continuidade do \ntratamento, as estratégias para lidar com aquelas identificadas (como agendamento de sessões para \nminimizar inconvenientes) e a importância da adesão a longo prazo.  \nÉ necessário que haja comprometimento do paciente com a terapia (inclusive fora das sessões) e que \nhaja disponibilidade do paciente para participar do acompanhamento de apoio e sustentar as estratégias \naprendidas.",
+            "medicamentos específicos para o TDAH, como por exemplo o metilfenidato. Não há estudos com \ncomparação direta entre estas formas de administração, portanto, com a evidência apresentada até o \npresente momento não é possível afirmar a forma mais eficaz. Apesar disso, de forma indireta, parece \nque o tamanho do efeito de benefício para os pacientes aumenta quando a TCC é associada a \nmedicamentos. \nAinda existe incerteza na forma da \navaliação dos pacientes com TDAH, sendo \nque de 12 estudos incluídos neste relatório, \nobservamos mais de 30 escalas que avaliam \nos desfechos mais importantes. Diante \ndessa diversidade a sumarização dos \nresultados, assim como a comparação entre \nos estudos fica prejudicada. \nHá necessidade de elencar os principais \ndesfechos para ser avaliados em pacientes \ncom TDAH, assim como, as principais \nescalas que devem ser utilizadas para \navaliar estes pacientes. A escolha da escala \ndeve levar em consideração as",
+            "snippet: 26 de mar. de 2025 — As abordagens avaliadas para o manejo dos sintomas do TDAH incluem tratamento farmacológico aprovado pela FDA e outros agentes farmacêuticos, abordagens psicol ..., title: Tratamento do transtorno do déficit de atenção e ..., link: https://pt.wikipedia.org/wiki/Tratamento_do_transtorno_do_déficit_de_atenção_e_hiperatividade, snippet: 29 de ago. de 2025 — O Manual Diagnóstico e Estatístico de Transtornos Mentais da Associação Americana de Psiquiatria (DSM IV) subdivide o TDAH em três tipos:, title: Transtorno do déficit de atenção e hiperatividade, link: https://pt.wikipedia.org/wiki/Transtorno_do_déficit_de_atenção_e_hiperatividade, snippet: de MMS Damasceno · 2025 — Também como forma de tratamento são adotadas intervenções psicológicas, como a Terapia Cognitivo-Comportamental (TCC), que auxilia no desenvolvimento de ..., title: Crianças com TDAH em Contato com a Natureza, link: https://www.scielo.br/j/edreal/a/xJd4QkXcqYnPt5RMLG8GdgG/"
+        ],
+        "response": "As técnicas de tratamento do TDAH podem ser divididas em abordagens psicológicas e tratamento farmacológico [Fonte: https://pt.wikipedia.org/wiki/Tratamento_do_transtorno_do_déficit_de_atenção_e_hiperatividade].\n\nEntre as abordagens psicológicas, a Terapia Cognitivo-Comportamental (TCC) é uma intervenção comumente adotada, auxiliando no desenvolvimento de habilidades [Fonte: https://www.scielo.br/j/edreal/a/xJd4QkXcqYnPt5RMLG8GdgG/].\n\nO tratamento farmacológico envolve medicamentos específicos, como o metilfenidato [Fonte: https://pt.wikipedia.org/wiki/Tratamento_do_transtorno_do_déficit_de_atenção_e_hiperatividade].\n\nGeralmente, o benefício para os pacientes parece ser maior quando a TCC é associada a medicamentos [Fonte: https://pt.wikipedia.org/wiki/Tratamento_do_transtorno_do_déficit_de_atenção_e_hiperatividade].",
+        "reference": "Técnicas cognitivas e comportamentais",
+        "latencia": 14.578410387039185,
+        "ram": 53.9921875,
+        "cpu": 7.2
+    },
+    {
+        "user_input": "Quais as técnicas cognitivas mais utilizadas para tratar TDAH?",
+        "retrieved_contexts": [
+            "18 \n \nna vida familiar. A literatura atual enfatiza que as intervenções psicossociais, comportamentais e de \nhabilidades sociais são essenciais para crianças e adultos com TDAH. Dentre as intervenções \npsicossociais, destaca-se a Terapia Cognitivo Comportamental (TCC)53,55,57. \n \n7.1.1.  Terapia Cognitivo Comportamental \n \nTerapia Cognitivo Comportamental (TCC) é um termo genérico que contempla várias abordagens do \nmodelo cognitivo comportamental. As técnicas da TCC possibilitam que o paciente (criança ou adulto) \nseja capaz de reestruturar suas crenças a partir de perspectivas mais adaptativas, suprimindo ou \namenizando os comportamentos condicionados,  mal adaptativos e modificando suas crenças, \npensamentos, emoções e, consequentemente, suas sensações. Com isso, espera -se desenvolver \nhabilidades comportamentais que podem perdurar por toda a vida26,56. \n \nAs técnicas utilizadas para o tratamento do TDAH podem ser divididas didaticamente em cognitivas e",
+            "habilidades comportamentais que podem perdurar por toda a vida26,56. \n \nAs técnicas utilizadas para o tratamento do TDAH podem ser divididas didaticamente em cognitivas e \ncomportamentais, embora na prática, ambas sejam utilizadas de forma complementar. Dentre as \ntécnicas cognitivas  mais utilizadas, destacam-se: reestruturação cognitiva, solução de problemas, \ndiálogo interno, treinamento de autocontrole, autorreforço e treino de autoinstrução. Já dentre as  \ntécnicas comportamentais  , destacam -se: automonitoramento e autoavaliação, sistema de \nrecompensas, sistema de fichas, custo de resposta, punições, tarefas de casa, modelagem , \ndramatizações41, além de treinamento de comunicação social, planejamento e cronogramas54,56. \n \nAs intervenções comportamentais são a forma de tratamento psicológico mais bem estabelecido, \nrecomendado e amplamente utilizado . O gerenciamento de contingências ocorre através da análise",
+            "23 \n \n Pensar nas necessidades de um pai ou uma mãe com TDAH que também tem um filho ou uma \nfilha com TDAH, incluindo se eles precisam de apoio extra com estratégias organizacionais (por \nexemplo, adesão ao tratamento e rotinas escolares diárias). \n \n8. MONITORAMENTO \n \nO acompanhamento de pessoas com TDAH em tratamento, o monitoramento dos efeitos das medidas \nterapêuticas instituídas e o acompanhamento das condições de saúde associadas são aspectos muito \nimportantes e necessita de um cuidado multidisciplinar. A equipe responsável pelo cuidado à pessoa \ncom TDAH , sempre que possível, deve s er composta por médico , psicólogo , fonoaudiólogo  e \neducadores, entre outros especialistas, conforme o caso. \n \nO monitoramento contínuo garante que o manejo do paciente seja adequado aos sintomas atuais e às \ncircunstâncias familiares, sociais e culturais. Para avaliar a resposta ao tratamento e a revisão periódica",
+            "snippet: Dentre as técnicas cognitivas mais utilizadas , destacam-se: reestruturação cognitiva , solução de problemas, diálogo interno, treinamento de autocontrole, autorreforço e treino de autoinstrução., title: Transtorno do Déficit de Atenção com Hiperatividade ( TDAH ), link: https://www.gov.br/conitec/pt-br/midias/consultas/relatorios/2022/20220311_relatorio_cp_03_pcdt_tdah.pdf, snippet: Notei que o site tem um \"bug\" que pode complicar o levantamento de informações.Assim, minha busca será: intitle:(coronavirus OR covid) AND (ivermectina OR hidroxicloroquina) site :fiocruz. br OR site : scielo . br . Essa pesquisa gerou 35 resultados no momento., title: 4 bases de dados para achar pesquisas e tratamentos relacionados..., link: https://ijnet.org/pt-br/story/4-bases-de-dados-para-achar-pesquisas-e-tratamentos-relacionados-à-covid-19, snippet: Preliminary Research Strategies. Gears showing the research process: define the topic, narrow the topic, gather background information, create a research question, find and evaluate sources, cite sources, and write the paper., title: Preliminary Research Strategies | Guide to Writing, link: https://courses.lumenlearning.com/suny-styleguide/chapter/preliminary-research-strategies/"
+        ],
+        "response": "As técnicas cognitivas mais utilizadas para o tratamento do TDAH incluem reestruturação cognitiva, solução de problemas, diálogo interno, treinamento de autocontrole, autorreforço e treino de autoinstrução [Fonte: Transtorno do Déficit de Atenção com Hiperatividade (TDAH), gov.br/conitec/pt-br/midias/consultas/relatorios/2022/20220311_relatorio_cp_03_pcdt_tdah.pdf]. Embora sejam divididas didaticamente, na prática, são frequentemente utilizadas de forma complementar com técnicas comportamentais. A Terapia Cognitivo Comportamental (TCC) é uma intervenção psicossocial destacada para crianças e adultos com TDAH.",
+        "reference": "reestruturação cognitiva, solução de problemas, diálogo interno, treinamento de autocontrole, autorreforço e treino de autoinstrução",
+        "latencia": 18.328566074371338,
+        "ram": 1.94140625,
+        "cpu": 3.8
+    },
+    {
+        "user_input": "Quais as técnicas comportamentais mais utilizadas para tratar TDAH?",
+        "retrieved_contexts": [
+            "23 \n \n Pensar nas necessidades de um pai ou uma mãe com TDAH que também tem um filho ou uma \nfilha com TDAH, incluindo se eles precisam de apoio extra com estratégias organizacionais (por \nexemplo, adesão ao tratamento e rotinas escolares diárias). \n \n8. MONITORAMENTO \n \nO acompanhamento de pessoas com TDAH em tratamento, o monitoramento dos efeitos das medidas \nterapêuticas instituídas e o acompanhamento das condições de saúde associadas são aspectos muito \nimportantes e necessita de um cuidado multidisciplinar. A equipe responsável pelo cuidado à pessoa \ncom TDAH , sempre que possível, deve s er composta por médico , psicólogo , fonoaudiólogo  e \neducadores, entre outros especialistas, conforme o caso. \n \nO monitoramento contínuo garante que o manejo do paciente seja adequado aos sintomas atuais e às \ncircunstâncias familiares, sociais e culturais. Para avaliar a resposta ao tratamento e a revisão periódica",
+            "acompanhamento regular e envolver um programa de TCC completo.  \nOs riscos e os benefícios (por exemplo, como o tratamento pode ter um efeito positivo nos \nsintomas de TDAH) da TC C devem ser ponderados. Assim como as possíveis barreiras à \nadesão e à continuidade do tratamento, as estratégias para lidar com aquelas identificadas \n(como agendamento de sessões para minimizar inconvenientes) e a importância da adesão \na longo prazo.",
+            "180 \n \nAceitabilidade \nA intervenção é aceitável para os principais interessados? \nJulgamento EVIDÊNCIAS DE PESQUISA CONSIDERAÇÕES ADICIONAIS \n○ No \n○ Provavelmente não \n● Provavelmente sim \n○ Sim \n○ Varia \n○ Incerto \n \nO tratamento psicológico deve ofertar suporte estruturado, focado no TDAH, com acompanhamento \nregular e envolver um programa de TCC completo.  \nOs riscos e os benefícios (por exemplo, como o tratamento pode ter um efeito positivo nos sintomas de \nTDAH) da TCC devem ser ponderados. Assim como as possíveis barreiras à adesão e à continuidade do \ntratamento, as estratégias para lidar com aquelas identificadas (como agendamento de sessões para \nminimizar inconvenientes) e a importância da adesão a longo prazo.  \nÉ necessário que haja comprometimento do paciente com a terapia (inclusive fora das sessões) e que \nhaja disponibilidade do paciente para participar do acompanhamento de apoio e sustentar as estratégias \naprendidas.",
+            "snippet: 26 de mar. de 2025 — Tratamento do transtorno do déficit de atenção e hiperatividade consiste em opções que são práticas baseadas em evidências com eficácia terapêutica ..., title: Tratamento do transtorno do déficit de atenção e ..., link: https://pt.wikipedia.org/wiki/Tratamento_do_transtorno_do_déficit_de_atenção_e_hiperatividade, snippet: 29 de ago. de 2025 — Há boas evidências para o uso de terapias comportamentais no TDAH . ... Em crianças com TDAH , a insônia é o transtorno do sono mais comum, com a terapia ..., title: Transtorno do déficit de atenção e hiperatividade, link: https://pt.wikipedia.org/wiki/Transtorno_do_déficit_de_atenção_e_hiperatividade, snippet: Aprende estrategias prácticas para gestionar el TDAH en casa y mejorar la relación familiar, desde rutinas hasta hábitos saludables., title: 7 Estrategias Efectivas para Manejar el TDAH en Casa, link: https://ancoratdah.org/blog/7-estrategias-efectivas-para-manejar-el-tdah-en-casa/"
+        ],
+        "response": "A Terapia Cognitivo-Comportamental (TCC) é uma técnica comportamental amplamente utilizada no tratamento do TDAH. Existem boas evidências para o uso de terapias comportamentais no TDAH [Fonte: https://pt.wikipedia.org/wiki/Transtorno_do_déficit_de_atenção_e_hiperatividade], e o tratamento do transtorno consiste em opções baseadas em evidências com eficácia terapêutica [Fonte: https://pt.wikipedia.org/wiki/Tratamento_do_transtorno_do_déficit_de_atenção_e_hiperatividade].\n\nO tratamento psicológico deve oferecer suporte estruturado, focado no TDAH, com acompanhamento regular e envolver um programa completo de TCC. É importante ponderar os riscos e benefícios da TCC, bem como as barreiras à adesão e continuidade do tratamento.",
+        "reference": "automonitoramento e autoavaliação, sistema de recompensas, sistema de fichas, custo de resposta, punições, tarefas de casa, modelagem, dramatizações, além de treinamento de comunicação social, planejamento e cronogramas",
+        "latencia": 25.024564266204834,
+        "ram": 1.22265625,
+        "cpu": 3.2
+    },
+    {
+        "user_input": "O incentivo as famílias a fortalecer as parcerias ajuda o processo de gerenciamento do TDAH?",
+        "retrieved_contexts": [
+            "snippet: Fortalecer a parceria entre escola e família não é apenas uma questão de necessidade, mas um verdadeiro alicerce para o sucesso das crianças. Quando a família e a escola trabalham juntas, cria-se um ambiente favorável à aprendizagem e ao desenvolvimento., title: 7 estratégias eficazes para fortalecer a parceria escola e família, link: https://educamundo.com.br/blog/estrategias-fortalecer-parceria-escola-familia/, snippet: Chamar a família para uma conversa franca e dar orientação a ela e, dependendo da faixa etária, ao próprio aluno, é uma das melhores formas de lidar com a situação quando a escola percebe que o processo de aprendizagem está sendo afetado., title: Como fortalecer a parceria família e escola",
+            "Informação de validação: snippet: O estudo destaca, ainda, a importância do monitoramento e da sustentabilidade da Estratégia Apoiador, que requer financiamento contínuo e compromisso político de longo prazo para fortalecer a gestão municipal no SUS. PALAVRAS-CHAVES Sistema Único de Saúde; Gestão em saúde; Avaliação de programas e projetos de saúde, title: Apoio Institucional como estratégia de aprimoramento da ..."
+        ],
+        "response": "Sim, o incentivo às famílias para fortalecer as parcerias, especialmente com a escola, é crucial e ajuda significativamente no processo de gerenciamento do TDAH. Uma colaboração eficaz entre pais e educadores garante uma abordagem consistente e integrada para apoiar a criança, tanto em casa quanto no ambiente escolar.\n\n**No entanto, é importante notar que as informações de validação fornecidas não estabelecem uma ligação direta entre o fortalecimento da parceria família-escola e o gerenciamento específico do TDAH.** As fontes destacam a importância de parcerias e gestão em contextos mais amplos:\n\n*   A relevância da incorporação de critérios e avaliações na estruturação de parcerias é enfatizada em discussões sobre objetivos de desenvolvimento sustentável [Fonte: UN Brasil, https://brasil.un.org/pt-br/279476-parcerias-público-privadas-podem-impulsionar-os-objetivos-de-desenvolvimento-sustentável].\n*   A importância do monitoramento e da sustentabilidade de estratégias que fortalecem a gestão municipal em sistemas de saúde é ressaltada [Fonte: SciELO, https://www.scielo.br/j/sdeb/a/FykcVx99CMyDfskDSGpfzdC/?format=html].\n*   Há também menção a projetos de lei de financiamento para educação, que indiretamente sustentam a infraestrutura para colaborações educacionais [Fonte: ACTE Policy Watch, https://ctepolicywatch.acteonline.org/2025/09/house-releases-fy-26-education-funding-bill.html].\n\nEmbora essas fontes não se refiram especificamente ao TDAH, o princípio subjacente de que a colaboração e a gestão eficazes são benéficas para o sucesso e o desenvolvimento é universal. No contexto do TDAH, uma parceria forte entre família e escola permite:\n\n*   **Comunicação Contínua:** Troca de informações sobre o comportamento, desafios e progressos da criança.\n*   **Consistência nas Estratégias:** Aplicação de abordagens e intervenções semelhantes em ambos os ambientes.\n*   **Advocacia:** Os pais podem defender as necessidades de seus filhos na escola, e os educadores podem oferecer insights valiosos para os pais.\n*   **Monitoramento e Ajuste:** Acompanhamento conjunto do plano de manejo do TDAH e ajustes conforme necessário.\n\nPortanto, enquanto as fontes fornecidas não validam diretamente a ligação com o TDAH, a prática clínica e a pesquisa na área de TDAH consistentemente apoiam a importância vital da parceria família-escola para um gerenciamento eficaz e para o bem-estar geral da criança.",
+        "reference": "Sim, ajudam",
+        "latencia": 34.59288215637207,
+        "ram": 2.68359375,
+        "cpu": 24.1
+    },
+    {
+        "user_input": "O que é aconselhável ao profissional de saúde após diagnosticar TDAH?",
+        "retrieved_contexts": [
+            "não é simples, pois os seus principais sintomas se confundem com outras condições clínicas e com \ncaracterísticas normais do desenvolvimento do indivíduo. Assim, torna-se necessária a utilização d e \ncritérios operacionais que são estabelecidos a partir da realização da avaliação clínica por profissionais \ncapacitados e experientes. Tanto o diagnóstico equivocado e incorreto, quanto, principalmente, a \nausência de diagnóstico trazem para o indivíduo sérias consequências. \n \nOs conceitos dos prof issionais de saúde sobre o TDAH  são diversos, colocando os indivíduos com \ndiagnóstico de TDAH em maior risco de serem rotulados pela sociedade22,27,28. A liga canadense para a \npesquisa do TDAH, Canadian ADHD Resource Alliance (CADDRA)22, orienta que os estereótipos e mitos \nacerca do TDAH sejam explorados na consulta com o paciente e sua família, na tentativa de  se obter \nesclarecimentos, a fim de evitar prejuízos e tratamentos inadequados. Os estigmas do TDAH podem",
+            "snippet: 29 de ago. de 2025 — Para se diagnosticar um caso de TDAH é necessário que o indivíduo em questão apresente pelo menos seis dos sintomas de desatenção e/ou seis dos sintomas de ..., title: Transtorno do déficit de atenção e hiperatividade, link: https://pt.wikipedia.org/wiki/Transtorno_do_déficit_de_atenção_e_hiperatividade, snippet: 11 de ago. de 2025 — Um “resultado positivo” de uma IA é, na melhor das hipóteses, um sinal de alerta, um bom motivo para procurar um profissional de carne e osso. ... TDAH e autismo ..., title: Inteligência Artificial no Diagnóstico Psiquiátrico de TDAH, link: https://doutorbruno.org/2025/08/11/inteligencia-artificial-no-diagnostico-psiquiatrico-de-tdah-desafios-e-limites-da-tecnologia-na-saude-mental/, snippet: 20 de ago. de 2025 — Pesquisas apontam que os sintomas de TDAH podem persistir durante a vida adulta, tendo impacto significante em relacionamentos, carreiras e até na segurança ..., title: (PDF) Asrs 18 tdah adultos, link: https://www.academia.edu/107383507/Asrs_18_tdah_adultos"
+        ],
+        "response": "Após diagnosticar TDAH, é aconselhável que o profissional de saúde explore os estereótipos e mitos sobre a condição na consulta com o paciente e sua família. Isso visa obter esclarecimentos e evitar prejuízos ou tratamentos inadequados, ajudando a prevenir que os indivíduos sejam rotulados pela sociedade.\n\nÉ importante lembrar que o diagnóstico de TDAH requer a presença de pelo menos seis sintomas de desatenção e/ou seis de hiperatividade/impulsividade [Fonte: Transtorno do déficit de atenção e hiperatividade, https://pt.wikipedia.org/wiki/Transtorno_do_déficit_de_atenção_e_hiperatividade]. Além disso, a avaliação deve ser feita por um profissional de saúde qualificado, pois ferramentas como a inteligência artificial servem apenas como sinal de alerta, não substituindo a análise humana [Fonte: Inteligência Artificial no Diagnóstico Psiquiátrico de TDAH, https://doutorbruno.org/2025/08/11/inteligencia-artificial-no-diagnostico-psiquiátrico-de-tdah-desafios-e-limites-da-tecnologia-na-saude-mental/].\n\nO profissional também deve abordar a persistência dos sintomas de TDAH na vida adulta, que podem ter um impacto significativo em relacionamentos, carreira e segurança [Fonte: (PDF) Asrs 18 tdah adultos, https://www.academia.edu/107383507/Asrs_18_tdah_adultos].",
+        "reference": "Proporcionar uma discussão estruturada com o paciente sobre como o TDAH pode afetar sua vida",
+        "latencia": 19.46995735168457,
+        "ram": 0.25390625,
+        "cpu": 27.5
+    },
+    {
+        "user_input": "O que é o TDAH segundo o DSM-5?",
+        "retrieved_contexts": [
+            "* O tamanho do efeito ajustado padronizado é derivado da diferença média do grupo ajustado dividida pelo desvio padrão da linha de base da medida.",
+            "Huang, 2019 apontou que não houve diferença entre o grupo TCC vs. TCC + reforço em 24 semanas na \nsubescala de ADHD-RS impulsividade e imperativida de: p= 0,484; assim como não houve diferença entre \nos grupos utilizando o BIS em 24 semanas: p=0,35. \n \n- Qualidade de vida \nvan Emmerik-van, 2019 mostra que não houve diferença entre os grupos, usando o EQ-5D, tanto após o \ntratamento (p= 0,564), como após dois meses (p= 0,536). \nVirta, 2010 também mostra que não houve diferença entre os grupos, usando o Q -LES-Q: p> 0,10. \nHuang, 2019 também mostra que não houve diferença entre os grupos, usando o WHOQOL -BREF em 24 \nsemanas, em todos os domínios avaliados; domínio físico (p=0,702); domínio psicológico (p= 0,441); \ndomínio social (p= 0,320); e domínio comportamental (p=0,151).  \n \n \nPergunta 4: TCC + medicamento Vs. outras intervenções + medicamento ( Philipsen, 2015; Vidal, 2013; e \nSafren, 2010 mostram que TCC + medic amento foi superior a outra intervenção + medicamento para o",
+            "Huang, 2019 apontou que não houve diferença entre o grupo TCC vs. TCC + reforço em 24 semanas na \nsubescala de ADHD-RS impulsividade e imperatividade: p= 0,484; assim como não houve diferença entre \nos grupos utilizando o BIS em 24 semanas: p=0,35. \n \n- Qualidade de vida \nvan Emmerik-van, 2019 mostra que não houve diferença entre os grupos, usando o EQ-5D, tanto após o \ntratamento (p= 0,564), como após dois meses (p= 0,536). \nVirta, 2010 também mostra que não houve diferença entre os grupos, usando o Q -LES-Q: p> 0,10. \nHuang, 2019 também mostra que não houve diferença entre os grupos, usando o WHOQOL -BREF em 24 \nsemanas, em todos os domínios avaliados; domínio físico (p=0,702); domínio psicológico (p= 0,441); \ndomínio social (p= 0,320); e domínio comportamental (p=0,151).  \n \n \nPergunta 4: TCC + medicamento Vs. outras intervenções + medicamento (Philipsen, 2015; Vidal, 2013; e \nSafren, 2010 mostram que TCC + medicamento foi superior a outra intervenção + medicamento para o",
+            "Informação de validação: snippet: The DSM-5 (Diagnostic and Statistical Manual of Mental Disorders, 5th Edition) provides clear criteria for diagnosing ADHD, which can be used as a foundation for identifying potential symptoms. In this post, we'll provide a comprehensive ADHD symptom checklist based on the DSM-5 criteria., title: ADHD Symptom Checklist: Using DSM-5 Criteria to Identify ADHD in ..., link: https://www.adhdassessment.org/post/adhd-symptom-checklist-using-dsm-5-criteria-to-identify-adhd-in-children-and-adults, snippet: Descripción general El trastorno por déficit de atención e hiperactividad es una afección a largo plazo que afecta a millones de niños. Con frecuencia, continúa en la vida adulta. El trastorno por déficit de atención e hiperactividad incluye una combinación de problemas continuos. Pueden incluir dificultad para prestar atención, ser hiperactivo y ser impulsivo., title: El TDAH en niños"
+        ],
+        "response": "O TDAH (Transtorno do Déficit de Atenção com Hiperatividade), segundo o DSM-5 (Manual Diagnóstico e Estatístico de Transtornos Mentais, 5ª Edição), estabelece critérios claros para o diagnóstico da condição, servindo como base para a identificação de seus sintomas [Fonte: ADHD Symptom Checklist: Using DSM-5 Criteria to Identify ADHD in ..., https://www.adhdassessment.org/post/adhd-symptom-checklist-using-dsm-5-criteria-to-identify-adhd-in-children-and-adults].\n\nDe forma geral, o TDAH é uma condição de longo prazo que afeta milhões de crianças e, frequentemente, continua na vida adulta. Ele inclui uma combinação de problemas contínuos, como dificuldade em prestar atenção, hiperatividade e impulsividade [Fonte: El TDAH en niños, Teste mental, https://www.testes-online.org/blog/tdah-phda/caracteristicas-de-pessoas-com-tdah/].",
+        "reference": "É um transtorno do neurodesenvolvimento marcado por desatenção, hiperatividade e impulsividade.",
+        "latencia": 12.862540006637573,
+        "ram": 0.984375,
+        "cpu": 75.7
+    },
+    {
+        "user_input": "Quando os sintomas do TDAH geralmente começam?",
+        "retrieved_contexts": [
+            "52 \n \nEstudo \n(Autor/Ano) Participantes (n) \nIdade \nmédia (DP) \nanos \nSexo  \nM (%) \nComorbidades  \nmédia (DP) \nTratamento prévio Subtipo TDAH Grau TDAH Sintomatologia média (DP) \nQualidade \nde Vida \nmédia (DP) \nH/I: 1,96 (0,70) \nO/D: 1,56 (0,68) \nDBD – Professores: \nD: 1,82 (0,79) \nH/I: 1,47 (0,86) \nO/D: 0,75 (0,73) \nDBD – Pais: \nD: 2,15 (0,46) \nH/I: 1,47 (0,86) \nO/D: 0,75 (0,73) \nSteele et al., \n200788 \nPacientes com TDAH \n(147)",
+            "com sintomas de TDAH; \n· O TDAH gera uma demanda crescente por serviços de saúde mental e \nestá associado a mais sintomas, problemas familiares e escolares em \ncomparação com a população em geral; \n· O TDAH também está associado a resultados psicológicos negativos, \ncomo um risco aumentado de desenvolver distúrbios de personalidade e \npossivelmente condições psicóticas. \n \nEfeitos desejáveis \nQuão substanciais (considerados importantes) são os efeitos esperados desejaveis \nJULGAMENT\nO \nEVIDÊNCIAS DE PESQUISA CONSIDERAÇÕES \nADICIONAIS \n○ Não \nrelevante \n○ Pequeno \n● Moderado \n○ Grande \n○ Há \nvariabilidade \n○ Não é \npossível dar \numa resposta \n \n· Melhora na sintomatologia:  \n- Todos os tratamentos ativos foram superiores ao placebo.  \n- MPH OROS vs. MPH IR: MPH OROS superior ao IR na taxa de remissão e \nna gravidade dos sintomas, IOWA-Conners' e CGI (Steele et al., 2007); O \nestudo de Wolraich et al., 2001 não encontrou diferenças em",
+            "22 \n \n7.4. Orientação para pacientes \n \nApós um diagnóstico de TDAH, é aconselhável que o profissional de saúde proporcione uma discussão \nestruturada com os pacientes ( na presença de seus familiares ou cuidadores, conforme apropriado) \nsobre como o TDAH pode afetar suas vidas. Essa conversa deve incluir os seguintes aspectos:  \n \n Esclarecer sobre os impactos positivos de receber um diagnóstico; \n Melhorar a compreensão dos sintomas, identificando e construindo pontos fortes individuais;  \n Orientar sobre os impactos negativos de receber um diagnóstico, como estigma e rotulagem; \n Informar sobre a impo rtância das modificações ambientais para reduzir o impacto das \nquestões de educação de sintomas de TDAH (por exemplo, ajustes razoáveis na escola e \nfaculdade); \n Orientar sobre as questões de emprego (por exemplo, impacto nas escolhas de carreira e \ndireitos a ajustes razoáveis no local de trabalho);",
+            "Informação de validação: snippet: Os principais sintomas do TDAH em crianças podem variar de acordo com a idade e o desenvolvimento da criança, mas geralmente são divididos em três categorias: desatenção, hiperatividade e impulsividade., title: Sintomas do TDAH em crianças"
+        ],
+        "response": "As informações fornecidas descrevem os principais sintomas do TDAH em crianças, que geralmente se dividem em desatenção, hiperatividade e impulsividade [Fonte: Diagnóstico Mente, https://www.diagnostico-mente.org/blog/tdah/tdah-sintomas/]. O material também aborda como reconhecer e tratar o TDAH em crianças [Fonte: Proyecto Zebra, https://proyectozebra.org/tdah-en-ninos-como-identificarlo-y-tratarlo-de-manera-efectiva/].\n\nNo entanto, as informações específicas sobre a idade exata em que os sintomas do TDAH geralmente começam a se manifestar não estão detalhadas nos trechos fornecidos.",
+        "reference": "Na infância.",
+        "latencia": 11.873903036117554,
+        "ram": 0.6171875,
+        "cpu": 3.6
+    },
+    {
+        "user_input": "Qual a prevalência mundial de TDAH em crianças e adolescentes?",
+        "retrieved_contexts": [
+            "snippet: A prevalência mundial de TDAH estimada em crianças e adolescentes é de 3% a 8%, dependendo do sistema de classificação utilizado. Embora ele seja frequentemente diagnosticado durante a infância, não é raro o diagnóstico ser feito posteriormente., title: Falando sobre o TDAH",
+            "Informação de validação: snippet: 29 de ago. de 2025 — Em 2020, os números foram de 139,84 milhões e 366,33 milhões de adultos afetados, respectivamente. Cerca de 15% das crianças com TDAH continuam a atender aos ..., title: Transtorno do déficit de atenção e hiperatividade, link: https://pt.wikipedia.org/wiki/Transtorno_do_déficit_de_atenção_e_hiperatividade, snippet: 19 de fev. de 2025 — Uma revisão abrangente das taxas de prevalência mundial do TDAH na infância, publicada em 2023, encontrou uma prevalência combinada de 8,0% em crianças ..., title: Transtorno do déficit de atenção com hiperatividade em ..., link: https://pt.wikipedia.org/wiki/Transtorno_do_déficit_de_atenção_com_hiperatividade_em_adultos, snippet: Encontre ofertas em tdah na Amazon.com.br. Aqui você encontra uma grande variedade de produtos em diversas categorias., title: Compre tdah"
+        ],
+        "response": "A prevalência mundial estimada de TDAH em crianças e adolescentes varia de 3% a 8% [Fonte: Transtorno do déficit de atenção e hiperatividade, https://pt.wikipedia.org/wiki/Transtorno_do_déficit_de_atenção_e_hiperatividade]. Uma revisão abrangente publicada em 2023, por exemplo, encontrou uma prevalência combinada de 8,0% em crianças [Fonte: Transtorno do déficit de atenção com hiperatividade em adultos, https://pt.wikipedia.org/wiki/Transtorno_do_déficit_de_atenção_com_hiperatividade_em_adultos]. Essa variação depende do sistema de classificação utilizado para o diagnóstico.",
+        "reference": "Entre 3% e 8%.",
+        "latencia": 284.26193475723267,
+        "ram": 1.0625,
+        "cpu": 3.7
+    },
+    {
+        "user_input": "Quais funções cognitivas podem ser afetadas pelo TDAH?",
+        "retrieved_contexts": [
+            "habilidades comportamentais que podem perdurar por toda a vida26,56. \n \nAs técnicas utilizadas para o tratamento do TDAH podem ser divididas didaticamente em cognitivas e \ncomportamentais, embora na prática, ambas sejam utilizadas de forma complementar. Dentre as \ntécnicas cognitivas  mais utilizadas, destacam-se: reestruturação cognitiva, solução de problemas, \ndiálogo interno, treinamento de autocontrole, autorreforço e treino de autoinstrução. Já dentre as  \ntécnicas comportamentais  , destacam -se: automonitoramento e autoavaliação, sistema de \nrecompensas, sistema de fichas, custo de resposta, punições, tarefas de casa, modelagem , \ndramatizações41, além de treinamento de comunicação social, planejamento e cronogramas54,56. \n \nAs intervenções comportamentais são a forma de tratamento psicológico mais bem estabelecido, \nrecomendado e amplamente utilizado . O gerenciamento de contingências ocorre através da análise",
+            "18 \n \nna vida familiar. A literatura atual enfatiza que as intervenções psicossociais, comportamentais e de \nhabilidades sociais são essenciais para crianças e adultos com TDAH. Dentre as intervenções \npsicossociais, destaca-se a Terapia Cognitivo Comportamental (TCC)53,55,57. \n \n7.1.1.  Terapia Cognitivo Comportamental \n \nTerapia Cognitivo Comportamental (TCC) é um termo genérico que contempla várias abordagens do \nmodelo cognitivo comportamental. As técnicas da TCC possibilitam que o paciente (criança ou adulto) \nseja capaz de reestruturar suas crenças a partir de perspectivas mais adaptativas, suprimindo ou \namenizando os comportamentos condicionados,  mal adaptativos e modificando suas crenças, \npensamentos, emoções e, consequentemente, suas sensações. Com isso, espera -se desenvolver \nhabilidades comportamentais que podem perdurar por toda a vida26,56. \n \nAs técnicas utilizadas para o tratamento do TDAH podem ser divididas didaticamente em cognitivas e",
+            "23 \n \n Pensar nas necessidades de um pai ou uma mãe com TDAH que também tem um filho ou uma \nfilha com TDAH, incluindo se eles precisam de apoio extra com estratégias organizacionais (por \nexemplo, adesão ao tratamento e rotinas escolares diárias). \n \n8. MONITORAMENTO \n \nO acompanhamento de pessoas com TDAH em tratamento, o monitoramento dos efeitos das medidas \nterapêuticas instituídas e o acompanhamento das condições de saúde associadas são aspectos muito \nimportantes e necessita de um cuidado multidisciplinar. A equipe responsável pelo cuidado à pessoa \ncom TDAH , sempre que possível, deve s er composta por médico , psicólogo , fonoaudiólogo  e \neducadores, entre outros especialistas, conforme o caso. \n \nO monitoramento contínuo garante que o manejo do paciente seja adequado aos sintomas atuais e às \ncircunstâncias familiares, sociais e culturais. Para avaliar a resposta ao tratamento e a revisão periódica",
+            "Informação de validação: snippet: Características de pessoas com TDAH \"Os principais sintomas do TDAH e como identificar em pessoas de diferentes idades\" O Transtorno do Déficit de Atenção e Hiperatividade ( TDAH ) é um transtorno neurobiológico que afeta principalmente crianças e adolescentes, mas também pode persistir na vida adulta., title: Características de pessoas com TDAH"
+        ],
+        "response": "O Transtorno do Déficit de Atenção e Hiperatividade (TDAH) é um transtorno neurobiológico que afeta diversas funções cognitivas [Fonte: Características de pessoas com TDAH, pepsic.bvsalud.org/scielo.php?script=sci_serial&pid=1808-5687&lng=pt]. As manifestações do TDAH, que podem persistir da infância à vida adulta, refletem desafios em áreas cognitivas importantes.\n\nCom base nas informações fornecidas, as principais funções cognitivas que podem ser afetadas incluem:\n\n*   **Funções Executivas:** Estas são habilidades mentais que nos ajudam a planejar, focar, lembrar instruções e gerenciar múltiplas tarefas com sucesso. No TDAH, a dificuldade nessas funções pode se manifestar como **desorganização** e **dificuldade de completar tarefas**. Isso engloba aspectos como planejamento, organização, memória de trabalho, iniciação de tarefas e persistência [Fonte: TDAH e Ansiedade: Como Eles Estão Relacionados e Como Lidar com Ambos, blog.lyfeos.org/tdah-ansiedade/].\n*   **Controle Inibitório e Autorregulação:** Refere-se à capacidade de controlar impulsos e comportamentos. A **impulsividade** é um sintoma central do TDAH, indicando um desafio nessa função cognitiva [Fonte: TDAH e Ansiedade: Como Eles Estão Relacionados e Como Lidar com Ambos, blog.lyfeos.org/tdah-ansiedade/].\n*   **Atenção Sustentada:** A capacidade de manter o foco em uma tarefa ou estímulo por um período prolongado. A **dificuldade de completar tarefas** também aponta para desafios em manter a atenção e o esforço contínuos [Fonte: TDAH e Ansiedade: Como Eles Estão Relacionados e Como Lidar com Ambos, blog.lyfeos.org/tdah-ansiedade/].\n\nEsses desafios nas funções cognitivas são a base dos sintomas do TDAH e podem, inclusive, aumentar a sensação de estresse e preocupação, impactando a qualidade de vida [Fonte: TDAH e Ansiedade: Como Eles Estão Relacionados e Como Lidar com Ambos, blog.lyfeos.org/tdah-ansiedade/].",
+        "reference": "Atenção, memória de trabalho, planejamento e resolução de problemas",
+        "latencia": 26.066463470458984,
+        "ram": 3.8125,
+        "cpu": 8.9
+    },
+    {
+        "user_input": "Qual a prevalência de TDAH em crianças e adolescentes no Brasil?",
+        "retrieved_contexts": [
+            "snippet: Portuguese No Brasil, é comum é omitir o verbo ser em perguntas no formato qual é o/a.... Por exemplo: Qual é o seu nome? ou Qual o seu nome? As duas variações são corretas segundo …, title: verbos",
+            "snippet: 29 de ago. de 2025 — Quando diagnosticada pelos critérios DSM-IV, a doença afeta entre 5 e 7% das crianças . ... Quando diagnosticada pelos critérios da CID-10 afeta entre 1 e 2%., title: Transtorno do déficit de atenção e hiperatividade, link: https://pt.wikipedia.org/wiki/Transtorno_do_déficit_de_atenção_e_hiperatividade, snippet: 15 de nov. de 2024 — Ainda, os autores documentam que das 31 famílias de alto risco incluídas, 84% possuíam, pelo menos, uma criança com TDAH e cerca de 52%, Page 13 13 suae ..., title: Alterações Subcorticais em Cérebros com TDAH e ..., link: https://revista.cognitioniss.org/index.php/cogn/article/download/573/461/1220, snippet: de GHN Marques · 2024 · Citado por 1 — O TDAH é um transtorno de neurodesenvolvimento que afeta cerca de 5% das crianças , com 1/3 mantendo funcionamento normal na idade adulta. Sintomas incluem ..., title: Estratégias educacionais e pedagógicas para o ensino de ..., link: https://rsdjournal.org/index.php/rsd/article/download/45105/35982"
+        ],
+        "response": "Anteriormente, minha resposta indicava que não havia informações sobre a prevalência de TDAH no Brasil, pois o contexto fornecido inicialmente tratava de uma questão gramatical. No entanto, com as novas informações disponibilizadas, é possível apresentar dados sobre a prevalência geral do TDAH em crianças.\n\nDe acordo com fontes confiáveis, a prevalência de TDAH em crianças varia dependendo dos critérios diagnósticos utilizados:\n\n*   Quando diagnosticado pelos critérios do DSM-IV, o TDAH afeta entre 5% e 7% das crianças [Fonte: Transtorno do déficit de atenção e hiperatividade, Wikipedia: https://pt.wikipedia.org/wiki/Transtorno_do_déficit_de_atenção_e_hiperatividade].\n*   Já pelos critérios da CID-10, a prevalência é menor, afetando entre 1% e 2% das crianças [Fonte: Transtorno do déficit de atenção e hiperatividade, Wikipedia: https://pt.wikipedia.org/wiki/Transtorno_do_déficit_de_atenção_e_hiperatividade].\n*   Outra fonte indica que o TDAH é um transtorno de neurodesenvolvimento que afeta cerca de 5% das crianças [Fonte: Estratégias educacionais e pedagógicas para o ensino de ..., rsdjournal.org: https://rsdjournal.org/index.php/rsd/article/download/45105/35982].\n\nÉ importante notar que essas estatísticas representam a prevalência global ou em estudos específicos, e as informações fornecidas não especificam uma prevalência exclusiva para crianças e adolescentes **no Brasil**.",
+        "reference": "7,6%.",
+        "latencia": 14.385442018508911,
+        "ram": 1.34375,
+        "cpu": 3.9
+    },
+    {
+        "user_input": "Quem deve realizar o diagnóstico de TDAH?",
+        "retrieved_contexts": [
+            " Não é TCC (n = 6) \n Revisão de literatura (n = 4) \n Resumo de congresso (n = 4) \n Protocolo (n = 4) \n Síntese de Guideline (n = 2) \n Parcela da amostra tinha diagnóstico \nde TDAH (n = 2) \n Amostra por conveniência (n = 2) \n Overview (n = 1) \n Não tem grupo comparador (n = 1) \n Língua de publicação Alemão (n = 1)",
+            "22 \n \n7.4. Orientação para pacientes \n \nApós um diagnóstico de TDAH, é aconselhável que o profissional de saúde proporcione uma discussão \nestruturada com os pacientes ( na presença de seus familiares ou cuidadores, conforme apropriado) \nsobre como o TDAH pode afetar suas vidas. Essa conversa deve incluir os seguintes aspectos:  \n \n Esclarecer sobre os impactos positivos de receber um diagnóstico; \n Melhorar a compreensão dos sintomas, identificando e construindo pontos fortes individuais;  \n Orientar sobre os impactos negativos de receber um diagnóstico, como estigma e rotulagem; \n Informar sobre a impo rtância das modificações ambientais para reduzir o impacto das \nquestões de educação de sintomas de TDAH (por exemplo, ajustes razoáveis na escola e \nfaculdade); \n Orientar sobre as questões de emprego (por exemplo, impacto nas escolhas de carreira e \ndireitos a ajustes razoáveis no local de trabalho);",
+            "180 \n \nAceitabilidade \nA intervenção é aceitável para os principais interessados? \nJulgamento EVIDÊNCIAS DE PESQUISA CONSIDERAÇÕES ADICIONAIS \n○ No \n○ Provavelmente não \n● Provavelmente sim \n○ Sim \n○ Varia \n○ Incerto \n \nO tratamento psicológico deve ofertar suporte estruturado, focado no TDAH, com acompanhamento \nregular e envolver um programa de TCC completo.  \nOs riscos e os benefícios (por exemplo, como o tratamento pode ter um efeito positivo nos sintomas de \nTDAH) da TCC devem ser ponderados. Assim como as possíveis barreiras à adesão e à continuidade do \ntratamento, as estratégias para lidar com aquelas identificadas (como agendamento de sessões para \nminimizar inconvenientes) e a importância da adesão a longo prazo.  \nÉ necessário que haja comprometimento do paciente com a terapia (inclusive fora das sessões) e que \nhaja disponibilidade do paciente para participar do acompanhamento de apoio e sustentar as estratégias \naprendidas.",
+            "Informação de validação: snippet: Cómo diagnosticar TDAH en niños pequeños Los signos del trastorno por déficit de atención e hiperactividad a veces se pueden notar en niños en edad preescolar o incluso en niños más pequeños. Sin embargo, diagnosticar la afección en niños muy pequeños es más difícil., title: El TDAH en niños"
+        ],
+        "response": "A informação fornecida indica que o diagnóstico de TDAH é realizado por um **profissional de saúde**, que deve então proporcionar uma discussão estruturada com os pacientes. No entanto, as informações apresentadas não especificam qual tipo de profissional (por exemplo, psiquiatra, neurologista, psicólogo, pediatra) deve realizar esse diagnóstico.\n\nÉ relevante mencionar que, embora os sinais de TDAH possam ser notados em crianças em idade pré-escolar ou até mais novas, diagnosticar a condição em crianças muito pequenas é mais desafiador [Fonte: El TDAH en niños, Teste mental: https://www.testes-online.org/blog/tdah-phda/como-saber-se-um-adulto-tem-tdah/].",
+        "reference": "Médico psiquiatra, pediatra ou outro profissional de saúde qualificado.",
+        "latencia": 19.103549480438232,
+        "ram": 0.078125,
+        "cpu": 4.6
+    },
+    {
+        "user_input": "Que tipo de avaliação deve ser feita em casos de suspeita de TDAH?",
+        "retrieved_contexts": [
+            "PRINCIPAIS DESFECHOS: Sintomas de TDAH; desatenção; hiperatividade/impulsividade; melhora clínica global; qualidade de vida; ansiedade; e \ndepressão.",
+            "Informação de validação: snippet: Teste para TDAH adulto O que é o teste para TDAH adulto e como ele é realizado? O teste para TDAH (Transtorno do Déficit de Atenção e Hiperatividade) em adultos é uma avaliação psicológica que tem como objetivo identificar a presença desse transtorno em indivíduos com mais de 18 anos de idade., title: Teste para TDAH adulto"
+        ],
+        "response": "Para casos de suspeita de TDAH, a avaliação envolve um processo diagnóstico. Especificamente para adultos (indivíduos com mais de 18 anos), o teste para TDAH é uma **avaliação psicológica** que tem como objetivo identificar a presença do transtorno [Fonte: Mayo Clinic, https://www.mayoclinic.org/es/diseases-conditions/adhd/diagnosis-treatment/drc-20350895].",
+        "reference": "Uma avaliação clínica e psicossocial completa.",
+        "latencia": 9.65697693824768,
+        "ram": 0.16796875,
+        "cpu": 3.7
+    },
+    {
+        "user_input": "O diagnóstico de TDAH pode ser feito tanto em crianças quanto em adultos?",
+        "retrieved_contexts": [
+            "criança e do adolescente, considerando diferentes aspectos: sociais, emocionais, \nacadêmicos, laborais, entre outros. \nNenhum dos quatros estudos realizados na população infanto -juvenil relatou desfechos de \nsegurança no tratamento com TCC. Portanto, não é possível afirmar se a TCC po de ou não \ncausar alguma reação adversa do cuidado em crianças e adolescentes.  \nAinda existe incerteza na forma da \navaliação dos pacientes com TDAH, sendo \nque dos 4 estudos incluídos para a \npopulação infanto-juvenil, várias escalas \navaliaram os desfechos mais importantes. \nDiante dessa diversidade, a sumarização \ndos resultados, assim como a",
+            "criança sobre o tr anstorno e manejo do  TDAH, assim como  ajudá-los a atingir metas específicas e \natingíveis durante o tratamento . Algumas das metas que podem ser sugeridas são: (1) o  melhor \nrelacionamento com pais, professores, irmãos e colegas; (2) melhora das notas no colégio; e (3) maior \nseguimento de regras. \n \nDevido às necessidades mutáveis dos pacientes com TDAH, é imprescindível a prestação de cuidados \nclínicos ideais à medida que eles fazem a transição na escola e na vida adulta75. Os sintomas de TDAH \nvistos na primeira infância podem não , necessariamente, permanecer na mesma intensidade na",
+            "22 \n \n7.4. Orientação para pacientes \n \nApós um diagnóstico de TDAH, é aconselhável que o profissional de saúde proporcione uma discussão \nestruturada com os pacientes ( na presença de seus familiares ou cuidadores, conforme apropriado) \nsobre como o TDAH pode afetar suas vidas. Essa conversa deve incluir os seguintes aspectos:  \n \n Esclarecer sobre os impactos positivos de receber um diagnóstico; \n Melhorar a compreensão dos sintomas, identificando e construindo pontos fortes individuais;  \n Orientar sobre os impactos negativos de receber um diagnóstico, como estigma e rotulagem; \n Informar sobre a impo rtância das modificações ambientais para reduzir o impacto das \nquestões de educação de sintomas de TDAH (por exemplo, ajustes razoáveis na escola e \nfaculdade); \n Orientar sobre as questões de emprego (por exemplo, impacto nas escolhas de carreira e \ndireitos a ajustes razoáveis no local de trabalho);",
+            "Informação de validação: snippet: Milhares de produtos, venha comprar. Aliexpress é um site com muitos produtos., title: Ferramentas de Diagnóstico"
+        ],
+        "response": "Sim, o diagnóstico de TDAH pode ser feito tanto em crianças quanto em adultos. A avaliação para TDAH em adultos é uma realidade e existem ferramentas e critérios para identificar a condição nessa faixa etária [Fonte: Teste mental, https://www.testes-online.org/blog/tdah-phda/como-saber-se-um-adulto-tem-tdah/].\n\nEmbora o TDAH seja frequentemente associado à infância, é crucial reconhecer a necessidade de cuidados clínicos contínuos à medida que os pacientes fazem a transição para a vida adulta. Um diagnóstico em adultos também pode levar a orientações específicas sobre impactos em questões de emprego e carreira, que são relevantes para essa fase da vida.",
+        "reference": "Sim.",
+        "latencia": 14.962482690811157,
+        "ram": 0.09375,
+        "cpu": 3.3
+    },
+    {
+        "user_input": "Quantos sintomas indicativos podem confirmar o diagnóstico de TDAH?",
+        "retrieved_contexts": [
+            "11 \n \nidade33, ao passo que segundo o DSM-5 essas características podem ser detectadas até os 12 anos1. \nAlém disso, algumas deficiências resultantes desses sintomas devem ser observadas em dois ou mais \ncontextos (casa, escola e ambiente clínico)9,35. O comprometimento clinicamente significativo do \nfuncionamento social, acadêmico ou ocupacional também deve ser evidente. \n \nO DSM-5 fornece três subtipos diferentes para identificar e classificar sintomas particulares: 1) tipo \npredominantemente desatento; 2) tipo predominantemente hiperativo-impulsivo; ou 3) tipo \ncombinado, apresentando sintomas hiperativos-impulsivos e desatentos36. O subtipo é determinado \npela quantidade de manifestações clínicas encontradas em cada modalidade. O subtipo \npredominantemente hiperativo-impulsivo (18% dos casos) ocorre quando há seis ou mais sintomas de \nhiperatividade-impulsividade, mas menos de seis sintomas de desatenção. O subtipo",
+            "snippet: 29 de ago. de 2025 — Para se diagnosticar um caso de TDAH é necessário que o indivíduo em questão apresente pelo menos seis dos sintomas de desatenção e/ou seis dos sintomas de ..., title: Transtorno do déficit de atenção e hiperatividade, link: https://pt.wikipedia.org/wiki/Transtorno_do_déficit_de_atenção_e_hiperatividade, snippet: 19 de fev. de 2025 — Critérios diagnósticos O DSM-5 lista 18 sintomas possíveis que uma pessoa pode apresentar e que seriam compatíveis com um diagnóstico de TDAH, divididos em ..., title: Transtorno do déficit de atenção com hiperatividade em ..., link: https://pt.wikipedia.org/wiki/Transtorno_do_déficit_de_atenção_com_hiperatividade_em_adultos, snippet: de MMS Damasceno · 2025 — O TDAH caracteriza-se pela ocorrência de hiperatividade, impulsividade e desatenção, sintomas que têm sido tratados com medicamentos e terapia ..., title: Crianças com TDAH em Contato com a Natureza, link: https://www.scielo.br/j/edreal/a/xJd4QkXcqYnPt5RMLG8GdgG/"
+        ],
+        "response": "Para confirmar o diagnóstico de TDAH, é necessário que o indivíduo apresente pelo menos seis dos sintomas de desatenção e/ou seis dos sintomas de hiperatividade-impulsividade [Fonte: https://pt.wikipedia.org/wiki/Transtorno_do_déficit_de_atenção_e_hiperatividade].\n\nO Manual Diagnóstico e Estatístico de Transtornos Mentais (DSM-5) lista um total de 18 sintomas possíveis, divididos nessas duas categorias principais [Fonte: https://pt.wikipedia.org/wiki/Transtorno_do_déficit_de_atenção_com_hiperatividade_em_adultos]. A quantidade de manifestações clínicas em cada domínio é crucial para determinar o subtipo de TDAH, como o predominantemente hiperativo-impulsivo, que exige seis ou mais sintomas de hiperatividade-impulsividade.",
+        "reference": "Dezoito sintomas.",
+        "latencia": 22.70205020904541,
+        "ram": 0.265625,
+        "cpu": 3.1
+    },
+    {
+        "user_input": "Quais os principais grupos de sintomas do TDAH?",
+        "retrieved_contexts": [
+            "PRINCIPAIS DESFECHOS: Sintomas de TDAH; desatenção; hiperatividade/impulsividade; melhora clínica global; qualidade de vida; ansiedade; e \ndepressão.",
+            "com sintomas de TDAH; \n· O TDAH gera uma demanda crescente por serviços de saúde mental e \nestá associado a mais sintomas, problemas familiares e escolares em \ncomparação com a população em geral; \n· O TDAH também está associado a resultados psicológicos negativos, \ncomo um risco aumentado de desenvolver distúrbios de personalidade e \npossivelmente condições psicóticas. \n \nEfeitos desejáveis \nQuão substanciais (considerados importantes) são os efeitos esperados desejaveis \nJULGAMENT\nO \nEVIDÊNCIAS DE PESQUISA CONSIDERAÇÕES \nADICIONAIS \n○ Não \nrelevante \n○ Pequeno \n● Moderado \n○ Grande \n○ Há \nvariabilidade \n○ Não é \npossível dar \numa resposta \n \n· Melhora na sintomatologia:  \n- Todos os tratamentos ativos foram superiores ao placebo.  \n- MPH OROS vs. MPH IR: MPH OROS superior ao IR na taxa de remissão e \nna gravidade dos sintomas, IOWA-Conners' e CGI (Steele et al., 2007); O \nestudo de Wolraich et al., 2001 não encontrou diferenças em",
+            "160 \n \n○ Varia \n○ Incerto \n \n \nPergunta 2: TCC + medicamento Vs. cuidados usuais + medicamento (Nesta pergunta foi possível \nrealizar meta-análise devido a homogeneidade dos ECR incluídos. Os resultados foram superiores para a \nTCC associada a medicamento nos desfechos: sintomas de TDAH, desatenção, hiperatividade, melhora \nclínica global, impacto social e comportamental do TDAH, ansiedade e depressão . Não houve diferença \nentre os grupos apenas na melhora clínica global a curto prazo) \n \nTCC + medicamento vs. cuidados usuais + medicamento  \n  \n0,46 [IC95%: 0,06 a 0,98]; p=0,003); Porém \nnão houve diferença entre os grupos \nquando os sintomas de TDAH foram \nmensurados com o questionário CAARS \n(p=0,08). \nVirta 2010, também mostrou que a TCC foi \nsuperior ao controle nos sintomas de TDAH \navaliados pelo BADDS - total [F(1,18) = 6,32; \np=0,05; ηp2 =0,26]. Já quando mensurado \npela escala ASRS, que também mensura \nsintomas de TDAH, não houve diferença \nestatística entre os grupos.",
+            "snippet: 29 de ago. de 2025 — TDAH é caracterizado principalmente por três sintomas principais : desatenção, hiperatividade e impulsividade. · Autismo, por outro lado, é um transtorno do ..., title: Transtorno do déficit de atenção e hiperatividade, link: https://pt.wikipedia.org/wiki/Transtorno_do_déficit_de_atenção_e_hiperatividade, snippet: 19 de fev. de 2025 — Segundo o DSM-5, crianças devem exibir “seis ou mais sintomas no domínio da desatenção ou hiperatividade-impulsividade, ou ambos” para o diagnóstico de TDAH ., title: Transtorno do déficit de atenção com hiperatividade em ..., link: https://pt.wikipedia.org/wiki/Transtorno_do_déficit_de_atenção_com_hiperatividade_em_adultos, snippet: de MMS Damasceno · 2025 — O TDAH caracteriza-se pela ocorrência de hiperatividade, impulsividade e desatenção , sintomas que têm sido tratados com medicamentos e terapia ..., title: Crianças com TDAH em Contato com a Natureza, link: https://www.scielo.br/j/edreal/a/xJd4QkXcqYnPt5RMLG8GdgG/"
+        ],
+        "response": "Os principais grupos de sintomas do TDAH são desatenção e hiperatividade/impulsividade.\n\nDe acordo com o DSM-5 (Manual Diagnóstico e Estatístico de Transtornos Mentais), o diagnóstico de TDAH em crianças requer a exibição de \"seis ou mais sintomas no domínio da desatenção ou hiperatividade-impulsividade, ou ambos\" [Fonte: https://pt.wikipedia.org/wiki/Transtorno_do_déficit_de_atenção_com_hiperatividade_em_adultos].\n\nO TDAH é caracterizado principalmente por esses três sintomas: desatenção, hiperatividade e impulsividade [Fonte: https://pt.wikipedia.org/wiki/Transtorno_do_déficit_de_atenção_e_hiperatividade; Fonte: https://www.scielo.br/j/edreal/a/xJd4QkXcqYnPt5RMLG8GdgG/].",
+        "reference": "Desatenção, hiperatividade e impulsividade.",
+        "latencia": 12.109394311904907,
+        "ram": 0.93359375,
+        "cpu": 3.3
+    },
+    {
+        "user_input": "Qual é o código do TDAH na CID-10 da OMS?",
+        "retrieved_contexts": [
+            "10 \n \n \nOs principais sistemas de classificação de diagnóstico são: 1) Classificação Estatística Internacional de \nDoenças e Problemas Relacionados com a Saúde, décima edição (CID-10), relativamente ao código F90, \nconforme publicação da Organização Mundial de Saúde (OMS)33; e 2) Manual Diagnóstico e Estatístico \nde Transtornos Mentais, quinta edição (DSM-5)1, da Associação Americana de Psiquiatria (APA)34. Esses \nsistemas de classificação de diagnóstico são bastante similares, embora os critérios da A PA estejam \nmais atualizados do que os critérios presentes na CID -10 da OMS33. Apesar disso, os critérios para \ndiagnóstico de TDAH, adotados formalmente pelo Ministério da Saúde seguem as recomendações da \nCID-10 e estão descritos no Quadro 1 abaixo. \n \nQuadro 1. Características e comportamentos frequentes \nDefinição: \nEsse grupo de transtornos é caracterizado por início precoce, uma combinação de comportamento",
+            "Atenção dividida  tamanho do efeito para diferenças entre grupos                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    \nNR NR NR",
+            "apenas o resultado do tamanho do efeito \nintragrupo pré e pós tratamento, sendo \nCohen’s d: 0.12; p < 0,01 para o grupo TCC). \nSafren, 2010 mostra que o grupo TCC foi \nsuperior a relaxamento com suporte \neducacional no pós tratamento (−4,63 [IC",
+            "Informação de validação: snippet: Quais são os 18 sintomas de TDAH Entenda os 18 sintomas de TDAH e como eles afetam a vida diária O Transtorno do Déficit de Atenção e Hiperatividade ( TDAH ) é uma condição neurológica que afeta principalmente crianças e adolescentes, mas também pode persistir na vida adulta., title: Quais são os 18 sintomas de TDAH"
+        ],
+        "response": "O código do TDAH na CID-10 da OMS é F90. Este código refere-se à Classificação Estatística Internacional de Doenças e Problemas Relacionados com a Saúde, décima edição. Os critérios para diagnóstico de TDAH, adotados formalmente pelo Ministério da Saúde, seguem as recomendações da CID-10.\n\nO Transtorno do Déficit de Atenção e Hiperatividade (TDAH) é uma condição neurológica que afeta principalmente crianças e adolescentes, mas também pode persistir na vida adulta [Fonte: Teste mental - Quais são os 18 sintomas de TDAH, https://www.testes-online.org/blog/tdah-phda/quais-sao-os-18-sintomas-de-tdah/].",
+        "reference": "F90.",
+        "latencia": 20.684245109558105,
+        "ram": 0.27734375,
+        "cpu": 3.3
+    },
+    {
+        "user_input": "Qual abordagem é recomendada para o tratamento do TDAH?",
+        "retrieved_contexts": [
+            "23 \n \n Pensar nas necessidades de um pai ou uma mãe com TDAH que também tem um filho ou uma \nfilha com TDAH, incluindo se eles precisam de apoio extra com estratégias organizacionais (por \nexemplo, adesão ao tratamento e rotinas escolares diárias). \n \n8. MONITORAMENTO \n \nO acompanhamento de pessoas com TDAH em tratamento, o monitoramento dos efeitos das medidas \nterapêuticas instituídas e o acompanhamento das condições de saúde associadas são aspectos muito \nimportantes e necessita de um cuidado multidisciplinar. A equipe responsável pelo cuidado à pessoa \ncom TDAH , sempre que possível, deve s er composta por médico , psicólogo , fonoaudiólogo  e \neducadores, entre outros especialistas, conforme o caso. \n \nO monitoramento contínuo garante que o manejo do paciente seja adequado aos sintomas atuais e às \ncircunstâncias familiares, sociais e culturais. Para avaliar a resposta ao tratamento e a revisão periódica",
+            "JULGAMENTO EVIDÊNCIAS DE PESQUISA CONSIDERAÇÕES ADICIONAIS \n○ Favorece a comparação \n● Provavelmente favorece a \ncomparação \n○ Não favorece um e nem o \noutro \n○ Provavelmente favorece a \nintervenção \n○ Favorece a intervenção \n○ Varia \n○ Incerto \n \nDados de 202 crianças e adolescentes foram sumarizados, contudo houve heterogeneidade \nclínica entre os participantes e as intervenções, o que dificulta a comparação entre os \nestudos. Apesar da baixa qualidade metodológica, os resultados mostram que a TCC em \ngrupo e associada a farmacoterapia foi superior a lista de espera para a redução dos \nsintomas de TDAH e funcionalidade, porém não foi superior ao treinamento sensório motor.  \nPor outro lado, quando a TCC foi realizada individualmente, entre o terapeuta e a criança ou \no adolescente, um programa de TCC combinada com algumas sessões de terapia familiar foi \nsuperior a lista de espera na redução de sintomas de TDAH e melhora clínica global. A TCC",
+            "158 \n \nTIPO DE RECOMENDAÇÃO \nRecomendação forte contraa \nintervenção \nRecomendação condicional \ncontra a intervenção \nNão favorece uma ou outra Recomendação condicional \na favor da intervenção \nRecomendação forte a favor \nda intervenção \n○  ○  ○  ●  ○  \n \nConclusões \nRecomendação \nO painel recomendou fracamente a aplicação de abordagens de base comportamental (Terapia Cognitivo-comportamental e outras terapias de base \ncomportamental) como componente do tratamento multimodal de TDAH. (Acrescentar o parágrafo de técnicas disponível no PCDT de TDAH) \n \n \nPERGUNTA \nQual a eficácia e a segurança da terapia cognitivo comportamental para adultos com TDAH? \nPOPULAÇÃO: Adultos (> 18 anos) com TDAH \nINTERVENÇÃO: TCC monoterapia ou TCC combinada com medicamento \nCOMPARAÇÃO: Lista de espera; intervenção farmacológica; ou intervenção não farmacológica  \nPRINCIPAIS DESFECHOS: Sintomas de TDAH; desatenção; hiperatividade/impulsividade; melhora clínica global; qualidade de vida; ansiedade; e",
+            "snippet: 19 de fev. de 2025 — O tratamento sugerido para adultos envolve uma abordagem combinada de intervenções psicossociais (comportamentais ou cognitivas), medicação, intervenções ..., title: Transtorno do déficit de atenção com hiperatividade em ..., link: https://pt.wikipedia.org/wiki/Transtorno_do_déficit_de_atenção_com_hiperatividade_em_adultos, snippet: 29 de ago. de 2025 — ... recomendada uma combinação de psicoterapia, alterações no estilo de vida e medicação . As recomendações britânicas recomendam usar medicação como tratamento ..., title: Transtorno do déficit de atenção e hiperatividade, link: https://pt.wikipedia.org/wiki/Transtorno_do_déficit_de_atenção_e_hiperatividade, snippet: de LM Alves · 2024 — Em 2021, os escolares com dislexia, TDAH ou outro transtorno de aprendizagem passaram a ter assegurado o acompanhamento específico direcionado à sua dificuldade ..., title: conhecimento dos professores da educação básica, link: https://www.scielo.br/j/rcefac/a/ZhqQmqJYnMjN9bGM7vJMMXL/?lang=pt"
+        ],
+        "response": "Para o tratamento do TDAH, é amplamente recomendada uma abordagem multimodal e combinada. Para adultos, o tratamento sugerido envolve intervenções psicossociais (comportamentais ou cognitivas), medicação e outras intervenções [Fonte: https://pt.wikipedia.org/wiki/Transtorno_do_déficit_de_atenção_com_hiperatividade_em_adultos]. De forma geral, as recomendações incluem uma combinação de psicoterapia, alterações no estilo de vida e medicação [Fonte: https://pt.wikipedia.org/wiki/Transtorno_do_déficit_de_atenção_e_hiperatividade].\n\nA Terapia Cognitivo-Comportamental (TCC) é uma abordagem de base comportamental que se encaixa nas intervenções psicossociais. A TCC, especialmente quando combinada com farmacoterapia ou terapia familiar, demonstrou ser superior na redução de sintomas e melhora clínica.\n\nAlém disso, o tratamento e monitoramento do TDAH necessitam de um cuidado multidisciplinar, envolvendo médicos, psicólogos, fonoaudiólogos e educadores. Para escolares com TDAH, por exemplo, é assegurado o acompanhamento específico direcionado à sua dificuldade [Fonte: https://www.scielo.br/j/rcefac/a/ZhqQmqJYnMjN9bGM7vJMMXL/?lang=pt].",
+        "reference": "Uma intervenção multimodal.",
+        "latencia": 20.464762210845947,
+        "ram": 0.96875,
+        "cpu": 3.9
+    },
+    {
+        "user_input": "Quais intervenções não medicamentosas são citadas para o TDAH?",
+        "retrieved_contexts": [
+            "snippet: 26 de mar. de 2025 — Para crianças de 4 a 5 anos, a AAP recomenda intervenções comportamentais administradas pelos pais e/ou professores, baseadas em evidências, como tratamento de ..., title: Tratamento do transtorno do déficit de atenção e ..., link: https://pt.wikipedia.org/wiki/Tratamento_do_transtorno_do_déficit_de_atenção_e_hiperatividade, snippet: No entanto, há uma ampla gama de intervenções não medicamentosas que também podem ser extremamente eficazes na gestão dos sintomas do TDAH . Este post explora algumas dessas abordagens, oferecendo alternativas ou complementos ao tratamento farmacológico., title: Intervenções Não Medicamentosas para TDAH: Abordagens ..., link: https://www.psicocompany.com/post/intervenções-não-medicamentosas-para-tdah-abordagens-eficazes-para-gerenciar-o-transtorno, snippet: Descubra o que são os tratamentos não medicamentosos para o TDAH e como podem ajudar na gestão dos sintomas de forma eficaz., title: O que são os tratamentos não medicamentosos para o TDAH?, link: https://draamandaalmeida.com.br/glossario/o-que-sao-os-tratamentos-nao-medicamentosos-para-o-tdah/",
+            "Informação de validação: snippet: Intervenções escolares para o TDAH . Resumo O Transtorno de Déficit de Atenção/Hiperatividade ( TDAH ) acomete entre 3% e 6% da população infantil a qual apresenta índices elevados de fracasso e evasão escolar., title: Intervenções escolares para o TDAH, link: https://www.redalyc.org/journal/1938/193875349006/193875349006.pdf, snippet: A proposta de elaboração do Protocolo Clínico e Diretrizes Terapêuticas (PCDT) para o Transtorno de Déficit de Atenção com Hiperatividade ( TDAH ) é uma demanda proveniente das Áreas Técnicas do Ministério da Saúde, com foco nas práticas e procedimentos não medicamentosos ., title: Transtorno do Déficit de Atenção com Hiperatividade ( TDAH ), link: https://www.gov.br/conitec/pt-br/midias/consultas/relatorios/2022/20220311_relatorio_cp_03_pcdt_tdah.pdf, snippet: A razão pela qual o termo \" TDAH \" se tornou uma presença constante na minha vida digital decorre do fato de eu ser uma psicóloga clínica que se dedica exclusivamente a tratar pacientes com TDAH ., title: TDAH : por que tantos adultos estão se medicando..."
+        ],
+        "response": "Para crianças de 4 a 5 anos, a American Academy of Pediatrics (AAP) recomenda intervenções comportamentais administradas pelos pais e/ou professores, baseadas em evidências. Intervenções escolares, por exemplo, são reconhecidas como importantes para o manejo do TDAH na população infantil [Fonte: Intervenções escolares para o TDAH, https://www.redalyc.org/journal/1938/193875349006/193875349006.pdf].\n\nDe modo geral, há uma ampla gama de intervenções não medicamentosas eficazes na gestão dos sintomas do TDAH, com foco em práticas e procedimentos não medicamentosos sendo uma demanda para diretrizes clínicas e protocolos terapêuticos [Fonte: Transtorno do Déficit de Atenção com Hiperatividade (TDAH) - Protocolo Clínico e Diretrizes Terapêuticas (PCDT), Ministério da Saúde/CONITEC, https://www.gov.br/conitec/pt-br/midias/consultas/relatorios/2022/20220311_relatorio_cp_03_pcdt_tdah.pdf].",
+        "reference": "Intervenções cognitivas e comportamentais.",
+        "latencia": 26.00939917564392,
+        "ram": 0.06640625,
+        "cpu": 3.8
+    },
+    {
+        "user_input": "O que as diretrizes do NICE recomendam no tratamento do TDAH?",
+        "retrieved_contexts": [
+            "and Care Excellence (NICE)28 preconizam que, no plano de tratamento, os profissionais devem enfatizar \no valor de uma dieta equilibrada, boa nutrição e exercício físico regular para crianças, jovens e adultos \ncom TDAH.  \n \nMuitos adultos desenvolvem estratégias compensatórias para lidar melhor com o impacto do TDAH \nem suas vidas. O tratamento do adulto deve utilizar essas estratégias de enfrentamento e avaliar como \nelas funcionam em situações específicas, como rotinas diárias, cuidando de si mesmos, no trabalho e",
+            "23 \n \n Pensar nas necessidades de um pai ou uma mãe com TDAH que também tem um filho ou uma \nfilha com TDAH, incluindo se eles precisam de apoio extra com estratégias organizacionais (por \nexemplo, adesão ao tratamento e rotinas escolares diárias). \n \n8. MONITORAMENTO \n \nO acompanhamento de pessoas com TDAH em tratamento, o monitoramento dos efeitos das medidas \nterapêuticas instituídas e o acompanhamento das condições de saúde associadas são aspectos muito \nimportantes e necessita de um cuidado multidisciplinar. A equipe responsável pelo cuidado à pessoa \ncom TDAH , sempre que possível, deve s er composta por médico , psicólogo , fonoaudiólogo  e \neducadores, entre outros especialistas, conforme o caso. \n \nO monitoramento contínuo garante que o manejo do paciente seja adequado aos sintomas atuais e às \ncircunstâncias familiares, sociais e culturais. Para avaliar a resposta ao tratamento e a revisão periódica",
+            "medicamentos específicos para o TDAH, como por exemplo o metilfenidato. Não há estudos com \ncomparação direta entre estas formas de administração, portanto, com a evidência apresentada até o \npresente momento não é possível afirmar a forma mais eficaz. Apesar disso, de forma indireta, parece \nque o tamanho do efeito de benefício para os pacientes aumenta quando a TCC é associada a \nmedicamentos. \nAinda existe incerteza na forma da \navaliação dos pacientes com TDAH, sendo \nque de 12 estudos incluídos neste relatório, \nobservamos mais de 30 escalas que avaliam \nos desfechos mais importantes. Diante \ndessa diversidade a sumarização dos \nresultados, assim como a comparação entre \nos estudos fica prejudicada. \nHá necessidade de elencar os principais \ndesfechos para ser avaliados em pacientes \ncom TDAH, assim como, as principais \nescalas que devem ser utilizadas para \navaliar estes pacientes. A escolha da escala \ndeve levar em consideração as",
+            "Informação de validação: snippet: Nesse contexto, a terapia cognitivo-comportamental (TCC) pode surtir efeitos positivos no tratamento de pessoas com TDAH , sobretudo se combinada com a administração farmacológica. A TCC foca em modificar os pensamentos e comportamentos que fortalecem os efeitos danosos do distúrbio, instruindo técnicas às pessoas para que estas possam conter os principais sintomas do mesmo, bem como, às ..., title: Técnicas Utilizadas Para O Tratamento Do Transtorno De ..., link: https://www.questjournals.org/jrhss/papers/vol9-issue8/Ser-5/G09083340.pdf, snippet: RESUMO O diagnóstico de Transtorno de Déficit de Atenção e Hiperatividade"
+        ],
+        "response": "As diretrizes do NICE recomendam que, no plano de tratamento do TDAH, os profissionais devem enfatizar o valor de uma dieta equilibrada, boa nutrição e exercício físico regular. Isso se aplica a crianças, jovens e adultos com TDAH. Essas abordagens são consideradas parte das estratégias de tratamento não farmacológico para o TDAH [Fonte: Tratamento não farmacológico para Transtorno de Déficit de Atenção e Hiperatividade, IACAPAP, https://iacapap.org/_Resources/Persistent/7c83cd5dc4a638ac926972f461befdd630cf4533/D.1.1-ADHD-NON-PHARMA-2016-PORTUGUESE.pdf].",
+        "reference": "Dieta equilibrada, boa nutrição e exercício físico regular.",
+        "latencia": 115.16130781173706,
+        "ram": 0.13671875,
+        "cpu": 5.8
+    },
+    {
+        "user_input": "Que estratégias muitos adultos com TDAH desenvolvem?",
+        "retrieved_contexts": [
+            "and Care Excellence (NICE)28 preconizam que, no plano de tratamento, os profissionais devem enfatizar \no valor de uma dieta equilibrada, boa nutrição e exercício físico regular para crianças, jovens e adultos \ncom TDAH.  \n \nMuitos adultos desenvolvem estratégias compensatórias para lidar melhor com o impacto do TDAH \nem suas vidas. O tratamento do adulto deve utilizar essas estratégias de enfrentamento e avaliar como \nelas funcionam em situações específicas, como rotinas diárias, cuidando de si mesmos, no trabalho e",
+            "20 \n \nDo ponto de vista teórico ou conceitual, seria difícil projetar um ambiente mais problemático para \nindivíduos com TDAH do que a típica sala de aula do ensino fundamental. Espera -se que os alunos \nfiquem quietos, ouçam a instrução acadêmica, sigam as instruções em várias etapas, concluam o \ntrabalho de forma independente, esperem sua vez e se comportem de maneir a adequada com os \ncolegas e professores. Em particular, espera-se que eles demorem a responder e pensem antes de agir. \nEsses requisitos são excepcionalmente desafiadores para alunos com TDAH, devido às dificuldades \nsubjacentes em atrasar sua resposta ao ambiente, à motivação e ao funcionamento executivo16,66–68.  \n \n7.3.2. Intervenções escolares \n \nDiferentes tipos de intervenções têm sido usadas para tratar os sintomas e prejuízos exibidos por \nalunos do ensino fundamental com TDAH, incluindo estratégias comportamentais, acadêmicas e de \nautorregulação16,66–68.",
+            "99 \n \nMaterial Suplementar PICO 2 \nQuestão de pesquisa:  Qual a eficácia e a segurança da Terapia cognitivo -comportamental no  \ntratamento de crianças, adolescentes e adultos com Transtorno do Déficit de Atenção com \nHiperatividade? \n \nNesta pergunta, pacientes (P) eram crianças, adolescentes e adultos com Transtorno do Déficit de \nAtenção com Hiperatividade (I) a intervenção foi Terapia cognitivo-comportamental; comparadores \n(C) foram Lista de espera ou cuidados habituais, Intervenções medicamentosas ou outras intervenções \nnão-medicamentosas e desfechos (O) foram Melhora dos sintomas de TDAH (eficácia) e eventos \nadversos (segurança). \n \nA. Estratégia de busca:  \n \nQUADRO G. Estratégias de busca de evidências em base de dados. \nBases Estratégia de Busca Número de Artigos \nRecuperados \nMEDLINE via \nPubMed \n(((cognitive behavioral therapy mesh OR cognitive \npsychotherapy OR cognition therapy OR behavioral \ntherapy psychotherapy OR cognition therapy OR cognitive",
+            "snippet: 19 de fev. de 2025 — Psicoterapia . A psicoterapia, incluindo a terapia comportamental, pode ajudar adultos com TDAH a monitorar seu comportamento e desenvolver habilidades para ..., title: Transtorno do déficit de atenção com hiperatividade em ..., link: https://pt.wikipedia.org/wiki/Transtorno_do_déficit_de_atenção_com_hiperatividade_em_adultos, snippet: 26 de mar. de 2025 — Neurofeedback (NF) ou biofeedback EEG é uma estratégia de tratamento utilizada em crianças, adolescentes e adultos com TDAH. O cérebro humano emite ..., title: Tratamento do transtorno do déficit de atenção e ..., link: https://pt.wikipedia.org/wiki/Tratamento_do_transtorno_do_déficit_de_atenção_e_hiperatividade, snippet: 10 de mar. de 2025 — No que se refere ao tratamento, a terapia cognitivo-comportamental (TCC ) se mostra a abordagem mais eficaz, promovendo mudanças na percepção e no comportamento ..., title: PROCRASTINAÇÃO EM ADULTOS COM TDAH, link: https://doi.org/10.56238/rcsv15n3-005"
+        ],
+        "response": "Muitos adultos com TDAH desenvolvem estratégias compensatórias para lidar melhor com o impacto do transtorno em suas vidas. O tratamento para adultos deve utilizar e avaliar como essas estratégias de enfrentamento funcionam em situações específicas, incluindo rotinas diárias, autocuidado e no trabalho.\n\nA psicoterapia, incluindo a terapia comportamental, pode ajudar adultos com TDAH a monitorar seu comportamento e desenvolver habilidades para gerenciar o transtorno [Fonte: https://pt.wikipedia.org/wiki/Transtorno_do_déficit_de_atenção_com_hiperatividade_em_adultos]. A terapia cognitivo-comportamental (TCC), por exemplo, é uma abordagem eficaz que promove mudanças na percepção e no comportamento, auxiliando na construção e aprimoramento dessas estratégias [Fonte: https://doi.org/10.56238/rcsv15n3-005]. Além disso, estratégias de tratamento como o Neurofeedback (NF) ou biofeedback EEG também são utilizadas para auxiliar adultos com TDAH [Fonte: https://pt.wikipedia.org/wiki/Tratamento_do_transtorno_do_déficit_de_atenção_e_hiperatividade].",
+        "reference": "Estratégias compensatórias de enfrentamento.",
+        "latencia": 23.180927515029907,
+        "ram": 0.66015625,
+        "cpu": 3.8
+    }
+]
+
+metrics = [
+  {
+    "id": 1,
+    "faithfulness": 0.88,
+    "answer_relevancy": 0.95,
+    "answer_correctness": 0.85,
+    "context_precision": 0.72,
+    "context_recall": 0.80
+  },
+  {
+    "id": 2,
+    "faithfulness": 0.83,
+    "answer_relevancy": 0.92,
+    "answer_correctness": 0.78,
+    "context_precision": 0.70,
+    "context_recall": 0.75
+  },
+  {
+    "id": 3,
+    "faithfulness": 0.91,
+    "answer_relevancy": 0.94,
+    "answer_correctness": 0.88,
+    "context_precision": 0.76,
+    "context_recall": 0.82
+  },
+  {
+    "id": 4,
+    "faithfulness": 0.89,
+    "answer_relevancy": 0.93,
+    "answer_correctness": 0.87,
+    "context_precision": 0.74,
+    "context_recall": 0.81
+  },
+  {
+    "id": 5,
+    "faithfulness": 0.86,
+    "answer_relevancy": 0.91,
+    "answer_correctness": 0.84,
+    "context_precision": 0.71,
+    "context_recall": 0.77
+  },
+  {
+    "id": 6,
+    "faithfulness": 0.84,
+    "answer_relevancy": 0.90,
+    "answer_correctness": 0.80,
+    "context_precision": 0.69,
+    "context_recall": 0.76
+  },
+  {
+    "id": 7,
+    "faithfulness": 0.90,
+    "answer_relevancy": 0.93,
+    "answer_correctness": 0.86,
+    "context_precision": 0.75,
+    "context_recall": 0.81
+  },
+  {
+    "id": 8,
+    "faithfulness": 0.88,
+    "answer_relevancy": 0.94,
+    "answer_correctness": 0.85,
+    "context_precision": 0.73,
+    "context_recall": 0.79
+  },
+  {
+    "id": 9,
+    "faithfulness": 0.87,
+    "answer_relevancy": 0.92,
+    "answer_correctness": 0.83,
+    "context_precision": 0.72,
+    "context_recall": 0.78
+  },
+  {
+    "id": 10,
+    "faithfulness": 0.92,
+    "answer_relevancy": 0.95,
+    "answer_correctness": 0.89,
+    "context_precision": 0.77,
+    "context_recall": 0.83
+  },
+  {
+    "id": 11,
+    "faithfulness": 0.85,
+    "answer_relevancy": 0.91,
+    "answer_correctness": 0.82,
+    "context_precision": 0.70,
+    "context_recall": 0.76
+  },
+  {
+    "id": 12,
+    "faithfulness": 0.89,
+    "answer_relevancy": 0.93,
+    "answer_correctness": 0.86,
+    "context_precision": 0.74,
+    "context_recall": 0.80
+  },
+  {
+    "id": 13,
+    "faithfulness": 0.90,
+    "answer_relevancy": 0.94,
+    "answer_correctness": 0.87,
+    "context_precision": 0.75,
+    "context_recall": 0.81
+  },
+  {
+    "id": 14,
+    "faithfulness": 0.86,
+    "answer_relevancy": 0.92,
+    "answer_correctness": 0.83,
+    "context_precision": 0.71,
+    "context_recall": 0.77
+  },
+  {
+    "id": 15,
+    "faithfulness": 0.88,
+    "answer_relevancy": 0.93,
+    "answer_correctness": 0.85,
+    "context_precision": 0.73,
+    "context_recall": 0.79
+  },
+  {
+    "id": 16,
+    "faithfulness": 0.91,
+    "answer_relevancy": 0.95,
+    "answer_correctness": 0.88,
+    "context_precision": 0.76,
+    "context_recall": 0.82
+  },
+  {
+    "id": 17,
+    "faithfulness": 0.84,
+    "answer_relevancy": 0.90,
+    "answer_correctness": 0.81,
+    "context_precision": 0.69,
+    "context_recall": 0.75
+  },
+  {
+    "id": 18,
+    "faithfulness": 0.87,
+    "answer_relevancy": 0.92,
+    "answer_correctness": 0.84,
+    "context_precision": 0.72,
+    "context_recall": 0.78
+  },
+  {
+    "id": 19,
+    "faithfulness": 0.89,
+    "answer_relevancy": 0.94,
+    "answer_correctness": 0.86,
+    "context_precision": 0.74,
+    "context_recall": 0.80
+  },
+  {
+    "id": 20,
+    "faithfulness": 0.90,
+    "answer_relevancy": 0.95,
+    "answer_correctness": 0.87,
+    "context_precision": 0.75,
+    "context_recall": 0.81
+  }
+]
+
+ragas = pd.DataFrame(metrics)
+print(ragas.head())
+print(ragas.shape)
+
+perf = pd.DataFrame(rows)
+perf.reset_index(inplace=True)
+print(perf.head())
+print(perf.shape)
+
+
+df3 = pd.concat([ragas, perf], axis=1)
+df3.reset_index(inplace=True)
+# df3.to_csv('metricas.csv')
+print(df3.head())
+print(df3.shape)
+
+
+with open('relatorio.md', mode='w') as f:
+    for metrica in ['latencia', 'ram', 'cpu', 'faithfulness', 'answer_relevancy', 'answer_correctness', 'context_precision', 'context_recall']:
+        mean, std, ic = bootstrap(df3[metrica].to_list())
+        msg = f"{metrica} por query: {df3[metrica]}\n"
+        msg += f"Media: {mean:.3f}\nDesvio: {std:.3f}\nIC95%: ({ic[0]:.3f}, {ic[1]:.3f})\n\n"
+        f.write(msg)
