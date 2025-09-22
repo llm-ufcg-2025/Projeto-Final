@@ -91,9 +91,6 @@ def bootstrap(values, n_bootstrap=10000):
 #     "Estratégias compensatórias de enfrentamento." # Pag 17
 # ]
 
-
-# 'AIzaSyDAO5Tb_GmNBWIYMzgm7yix56b8LgxpR8c'
-
 # rows = []
 # print('----------------')
 
